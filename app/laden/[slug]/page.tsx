@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { beispielLaeden, ladenFinden } from "../../lib/laeden";
 import KontaktFormular from "../../components/KontaktFormular";
@@ -7,7 +8,17 @@ export function generateStaticParams() {
   return beispielLaeden.map((laden) => ({ slug: laden.slug }));
 }
 
-export default async function LadenSeite({ params }: PageProps<"/laden/[slug]">) {
+// Die Seite selbst wartet auf nichts. So kann Next.js sofort einen Rahmen zeigen
+// und den Inhalt nachliefern, sobald der slug aus der URL bekannt ist.
+export default function LadenSeite({ params }: PageProps<"/laden/[slug]">) {
+  return (
+    <Suspense fallback={<p className="p-4 text-center">Lade Laden …</p>}>
+      <LadenInhalt params={params} />
+    </Suspense>
+  );
+}
+
+async function LadenInhalt({ params }: { params: PageProps<"/laden/[slug]">["params"] }) {
   const { slug } = await params;
   const laden = ladenFinden(slug);
   if (!laden) notFound();
