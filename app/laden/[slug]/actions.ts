@@ -40,17 +40,11 @@ export async function nachrichtSenden(
     return { ok: false, meldung: "Bitte wähle ein Anliegen aus der Liste.", werte };
   }
 
+  // Speichert Kontakt und Nachricht in Neon. Zeit und Status "neu" setzt die Datenbank.
   await nachrichtSpeichern({
     laden: slug,
     ...daten,
     betreff: daten.betreff ?? daten.anliegen, // ohne Betreff nehmen wir das Anliegen
-    eingegangen:
-      new Date().toLocaleString("de-DE", {
-        timeZone: "Europe/Berlin",
-        dateStyle: "medium",
-        timeStyle: "short",
-      }) + " Uhr",
-    status: "neu",
   });
 
   // Dashboard-Seite neu laden, damit die Nachricht dort sofort auftaucht
