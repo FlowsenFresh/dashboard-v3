@@ -21,9 +21,9 @@
   --color-schrift: #f4f4f5; /* Haupttext */
   --color-weiss: #ffffff;
 
-  /* Unser Markenzeichen: Rot */
-  --color-akzent: #ef4444;
-  --color-akzent-kraeftig: #dc2626;
+  /* Unser Markenzeichen: Türkis-Grün */
+  --color-akzent: #10b981;
+  --color-akzent-hell: #34d399; /* Knopf beim Drüberfahren */
 
   /* Status-Farben */
   --color-erfolg: #34d399;
@@ -51,7 +51,7 @@
 }
 
 @utility knopf {
-  @apply rounded-lg bg-akzent-kraeftig px-4 py-2 font-medium text-weiss transition hover:bg-akzent disabled:opacity-50;
+  @apply rounded-lg bg-akzent px-4 py-2 font-medium text-hintergrund transition hover:bg-akzent-hell disabled:opacity-50;
 }
 
 @utility knopf-leise {
