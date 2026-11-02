@@ -8,7 +8,8 @@
   --color-rand: var(--color-zinc-800);
   --color-schrift: var(--color-zinc-100);
   --color-gedaempft: var(--color-zinc-400);
-  --color-akzent: var(--color-emerald-500);
+  --color-akzent: var(--color-red-500); /* unser Markenzeichen */
+  --color-akzent-kraeftig: var(--color-red-600);
   --font-sans: var(--font-geist-sans);
 }
 
@@ -21,7 +22,7 @@
     @apply w-full rounded-lg border border-rand bg-hintergrund px-3 py-2 text-schrift placeholder:text-zinc-500 outline-none focus:border-akzent focus:ring-2 focus:ring-akzent/30;
   }
   .knopf {
-    @apply rounded-lg bg-akzent px-4 py-2 font-medium text-zinc-950 transition hover:bg-emerald-400 disabled:opacity-50;
+    @apply rounded-lg bg-akzent-kraeftig px-4 py-2 font-medium text-white transition hover:bg-akzent disabled:opacity-50;
   }
   .knopf-leise {
     @apply rounded-lg border border-rand px-3 py-1.5 text-sm text-gedaempft transition hover:border-zinc-600 hover:text-schrift;

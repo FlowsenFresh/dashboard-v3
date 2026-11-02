@@ -10,7 +10,8 @@ export default function Kopfzeile() {
   return (
     <header className="border-b border-rand">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-        <Link href="/" className="font-semibold tracking-tight">
+        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <span className="size-2.5 rounded-full bg-akzent" />
           Dashboard
         </Link>
         <div className="flex gap-4 text-sm text-gedaempft sm:gap-6">
