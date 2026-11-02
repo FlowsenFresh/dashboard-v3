@@ -21,6 +21,9 @@ export default function NachrichtenKarte({ nachricht }: { nachricht: Nachricht }
       </div>
 
       <div>
+        {nachricht.anliegen && nachricht.anliegen !== nachricht.betreff && (
+          <p className="text-xs font-medium text-akzent">{nachricht.anliegen}</p>
+        )}
         <h2 className="font-semibold">{nachricht.betreff}</h2>
         <p className="text-sm text-gedaempft">
           {nachricht.vorname} {nachricht.nachname}

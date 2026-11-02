@@ -1,6 +1,7 @@
 export type Nachricht = {
   readonly id: number;
   laden?: string; // slug des Ladens, über den die Nachricht kam
+  anliegen?: string; // was im Formular ausgewählt wurde, damit kann man zählen
   betreff: string;
   vorname: string;
   nachname: string;

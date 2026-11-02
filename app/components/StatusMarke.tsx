@@ -1,8 +1,8 @@
 // Kleine farbige Marke für einen Status, z. B. "neu" oder "erledigt"
 const farben = {
-  rot: "bg-red-500/15 text-red-400",
-  gelb: "bg-amber-500/15 text-amber-400",
-  gruen: "bg-emerald-500/15 text-emerald-400",
+  rot: "bg-fehler/15 text-fehler",
+  gelb: "bg-warnung/15 text-warnung",
+  gruen: "bg-erfolg/15 text-erfolg",
 };
 
 export default function StatusMarke({ text, farbe }: { text: string; farbe: keyof typeof farben }) {

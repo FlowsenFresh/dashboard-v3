@@ -1,33 +1,67 @@
 @import "tailwindcss";
 
-/* Unsere Farben an EINER Stelle. Im Code nutzen wir nur diese Namen,
-   z. B. bg-flaeche oder text-gedaempft. Farbe ändern = nur hier ändern. */
-@theme inline {
-  --color-hintergrund: var(--color-zinc-950);
-  --color-flaeche: var(--color-zinc-900);
-  --color-rand: var(--color-zinc-800);
-  --color-schrift: var(--color-zinc-100);
-  --color-gedaempft: var(--color-zinc-400);
-  --color-akzent: var(--color-red-500); /* unser Markenzeichen */
-  --color-akzent-kraeftig: var(--color-red-600);
+/* ── Unsere Farbpalette ───────────────────────────────────────────
+   Das sind ALLE Farben, die es in der App gibt. Die Standard-Farben
+   von Tailwind (zinc, red, ...) schalten wir mit "initial" ab.
+   So kann niemand aus Versehen eine fremde Farbe benutzen.
+   Farbe ändern = nur hier ändern, die ganze App zieht mit.
+
+   Im Code heißen sie dann z. B. bg-flaeche, text-gedaempft, border-rand,
+   text-akzent, bg-erfolg/15 (= 15 % Deckkraft).                      */
+@theme {
+  --color-*: initial;
+
+  /* Grautöne, von dunkel nach hell */
+  --color-hintergrund: #09090b; /* Seite */
+  --color-flaeche: #18181b; /* Karten */
+  --color-rand: #27272a; /* Ränder */
+  --color-rand-hover: #52525b; /* Ränder beim Drüberfahren */
+  --color-platzhalter: #71717a; /* Platzhalter in Eingabefeldern */
+  --color-gedaempft: #a1a1aa; /* Nebentext */
+  --color-schrift: #f4f4f5; /* Haupttext */
+  --color-weiss: #ffffff;
+
+  /* Unser Markenzeichen: Türkis-Grün */
+  --color-akzent: #10b981;
+  --color-akzent-hell: #34d399; /* Knopf beim Drüberfahren */
+
+  /* Status-Farben */
+  --color-erfolg: #34d399;
+  --color-warnung: #fbbf24;
+  --color-fehler: #f87171;
+
   --font-sans: var(--font-geist-sans);
 }
 
-/* Wiederverwendbare Bausteine, damit gleiche Dinge gleich aussehen */
-@layer components {
-  .karte {
-    @apply rounded-xl border border-rand bg-flaeche p-5;
-  }
-  .eingabe {
-    @apply w-full rounded-lg border border-rand bg-hintergrund px-3 py-2 text-schrift placeholder:text-zinc-500 outline-none focus:border-akzent focus:ring-2 focus:ring-akzent/30;
-  }
-  .knopf {
-    @apply rounded-lg bg-akzent-kraeftig px-4 py-2 font-medium text-white transition hover:bg-akzent disabled:opacity-50;
-  }
-  .knopf-leise {
-    @apply rounded-lg border border-rand px-3 py-1.5 text-sm text-gedaempft transition hover:border-zinc-600 hover:text-schrift;
-  }
-  .seitentitel {
-    @apply text-3xl font-semibold tracking-tight;
-  }
+/* ── Bausteine ────────────────────────────────────────────────────
+   Gleiche Dinge sehen immer gleich aus. Statt 10 Klassen schreibt man
+   im Code nur noch className="karte" oder className="knopf".
+   @utility macht daraus eine echte Tailwind-Klasse, die man auch mit
+   hover:, sm: usw. kombinieren und in anderen Bausteinen benutzen kann. */
+@utility karte {
+  @apply rounded-xl border border-rand bg-flaeche p-5;
+}
+
+@utility karte-link {
+  @apply karte transition hover:border-rand-hover;
+}
+
+@utility eingabe {
+  @apply w-full rounded-lg border border-rand bg-hintergrund px-3 py-2 text-schrift outline-none placeholder:text-platzhalter focus:border-akzent focus:ring-2 focus:ring-akzent/30;
+}
+
+@utility knopf {
+  @apply rounded-lg bg-akzent px-4 py-2 font-medium text-hintergrund transition hover:bg-akzent-hell disabled:opacity-50;
+}
+
+@utility knopf-leise {
+  @apply rounded-lg border border-rand px-3 py-1.5 text-sm text-gedaempft transition hover:border-rand-hover hover:text-schrift;
+}
+
+@utility auswahl {
+  @apply rounded-lg border border-rand bg-hintergrund px-4 py-3 text-left transition hover:border-akzent hover:text-akzent;
+}
+
+@utility seitentitel {
+  @apply text-3xl font-semibold tracking-tight;
 }

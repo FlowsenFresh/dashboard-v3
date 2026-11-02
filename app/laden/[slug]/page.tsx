@@ -52,7 +52,7 @@ async function LadenInhalt({ params }: { params: PageProps<"/laden/[slug]">["par
       <section className="karte">
         <h2 className="text-xl font-semibold">Schreib uns</h2>
         <p className="mb-5 mt-1 text-sm text-gedaempft">Wir melden uns so schnell wie möglich.</p>
-        <KontaktFormular slug={laden.slug} />
+        <KontaktFormular slug={laden.slug} anliegen={laden.anliegen} />
       </section>
     </main>
   );

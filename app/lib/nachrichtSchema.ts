@@ -15,7 +15,8 @@ export const kontaktSchema = z
   .object({
     vorname: z.string().trim().min(1, "Bitte Vorname ausfüllen.").max(50),
     nachname: z.string().trim().min(1, "Bitte Nachname ausfüllen.").max(50),
-    betreff: z.string().trim().min(1, "Bitte Betreff ausfüllen.").max(100),
+    anliegen: z.string().trim().min(1, "Bitte wähle zuerst ein Anliegen."),
+    betreff: optionalerText(100),
     email: z
       .union([z.literal(""), z.email("Die E-Mail-Adresse sieht nicht richtig aus.")])
       .transform((wert) => wert || undefined),
