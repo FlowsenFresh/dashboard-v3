@@ -26,3 +26,15 @@ export async function nachrichtSpeichern(neu: Omit<Nachricht, "id">): Promise<vo
   await mkdir(ordner, { recursive: true });
   await writeFile(datei, JSON.stringify(nachrichten, null, 2));
 }
+
+export async function nachrichtStatusSetzen(
+  id: number,
+  status: Nachricht["status"],
+): Promise<void> {
+  const nachrichten = await alleNachrichten();
+  const nachricht = nachrichten.find((n) => n.id === id);
+  if (!nachricht) return;
+  nachricht.status = status;
+  await mkdir(ordner, { recursive: true });
+  await writeFile(datei, JSON.stringify(nachrichten, null, 2));
+}

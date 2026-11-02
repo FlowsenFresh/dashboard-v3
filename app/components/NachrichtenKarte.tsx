@@ -1,14 +1,16 @@
-"use client";
-import { useState } from "react";
 import type { Nachricht } from "../lib/nachrichten";
+import { statusAendern } from "../nachrichten/actions";
 
 const statusFarbe = {
   neu: "text-red-500",
   gelesen: "text-yellow-500",
   beantwortet: "text-green-500",
 };
+
+// Kein "use client" und kein useState mehr: der Status kommt vom Server.
+// Der Knopf schickt ein Formular an die Server Action, die speichert dauerhaft.
 export default function NachrichtenKarte({ nachricht }: { nachricht: Nachricht }) {
-  const [status, setStatus] = useState(nachricht.status);
+  const status = nachricht.status;
 
   return (
     <div className="bg-zinc-600 border rounded p-2">
@@ -32,11 +34,14 @@ export default function NachrichtenKarte({ nachricht }: { nachricht: Nachricht }
       )}
       {nachricht.inhalt && <p>{nachricht.inhalt}</p>}
       {status === "neu" && (
-        <div className="flex justify-center">
-          <button onClick={() => setStatus("gelesen")} className="border rounded-xl text-sm px-1 mt-2 hover:bg-zinc-800">
+        <form
+          action={statusAendern.bind(null, nachricht.id, "gelesen")}
+          className="flex justify-center"
+        >
+          <button className="border rounded-xl text-sm px-1 mt-2 hover:bg-zinc-800">
             Als gelesen markieren
           </button>
-        </div>
+        </form>
       )}
     </div>
   );
