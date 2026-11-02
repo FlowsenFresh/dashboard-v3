@@ -1,15 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { Nachricht } from "../lib/nachrichten";
+import { z } from "zod";
 import { nachrichtStatusSetzen } from "../lib/nachrichtenSpeicher";
-
-const erlaubteStatus: Nachricht["status"][] = ["neu", "gelesen", "beantwortet"];
+import { statusSchema } from "../lib/nachrichtSchema";
 
 // Speichert den neuen Status auf dem Server, damit er nach dem Neuladen noch da ist
-export async function statusAendern(id: number, status: Nachricht["status"]): Promise<void> {
-  // Auch hier nicht blind vertrauen: nur bekannte Status annehmen
-  if (!erlaubteStatus.includes(status)) return;
-  await nachrichtStatusSetzen(id, status);
+export async function statusAendern(
+  id: number,
+  status: z.infer<typeof statusSchema>,
+): Promise<void> {
+  // Auch hier nicht blind vertrauen: nur eine echte Zahl und bekannte Status annehmen
+  const ergebnis = z
+    .object({ id: z.number().int(), status: statusSchema })
+    .safeParse({ id, status });
+  if (!ergebnis.success) return;
+  await nachrichtStatusSetzen(ergebnis.data.id, ergebnis.data.status);
   revalidatePath("/nachrichten");
 }

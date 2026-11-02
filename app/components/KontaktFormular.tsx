@@ -24,14 +24,45 @@ export default function KontaktFormular({ slug }: { slug: string }) {
   return (
     <form action={absenden} className="flex flex-col gap-3">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <input name="vorname" placeholder="Vorname *" required className={feld} />
-        <input name="nachname" placeholder="Nachname *" required className={feld} />
-        <input name="email" type="email" placeholder="E-Mail" className={feld} />
-        <input name="telefon" type="tel" placeholder="Telefon" className={feld} />
+        <input
+          name="vorname"
+          defaultValue={status.werte?.vorname}
+          placeholder="Vorname *"
+          required
+          className={feld}
+        />
+        <input
+          name="nachname"
+          defaultValue={status.werte?.nachname}
+          placeholder="Nachname *"
+          required
+          className={feld}
+        />
+        <input
+          name="email"
+          defaultValue={status.werte?.email}
+          type="email"
+          placeholder="E-Mail"
+          className={feld}
+        />
+        <input
+          name="telefon"
+          defaultValue={status.werte?.telefon}
+          type="tel"
+          placeholder="Telefon"
+          className={feld}
+        />
       </div>
-      <input name="betreff" placeholder="Betreff *" required className={feld} />
+      <input
+        name="betreff"
+        defaultValue={status.werte?.betreff}
+        placeholder="Betreff *"
+        required
+        className={feld}
+      />
       <textarea
         name="inhalt"
+        defaultValue={status.werte?.inhalt}
         placeholder="Deine Nachricht"
         rows={4}
         maxLength={2000}

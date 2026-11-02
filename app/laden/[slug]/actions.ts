@@ -3,10 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { ladenFinden } from "../../lib/laeden";
 import { nachrichtSpeichern } from "../../lib/nachrichtenSpeicher";
+import { kontaktSchema } from "../../lib/nachrichtSchema";
 
 export type FormularStatus = {
   ok: boolean;
   meldung: string;
+  // Was eingetippt wurde. React leert das Formular nach dem Absenden,
+  // bei einem Fehler füllen wir es damit wieder auf.
+  werte?: Record<string, string>;
 };
 
 // Läuft auf dem Server. Der Browser schickt nur die Formulardaten.
@@ -15,37 +19,23 @@ export async function nachrichtSenden(
   _vorher: FormularStatus,
   formData: FormData,
 ): Promise<FormularStatus> {
-  // Nie dem Browser trauen: alles hier nochmal prüfen
-  const text = (feld: string) => String(formData.get(feld) ?? "").trim();
-
-  const vorname = text("vorname");
-  const nachname = text("nachname");
-  const email = text("email");
-  const telefon = text("telefon");
-  const betreff = text("betreff");
-  const inhalt = text("inhalt");
-
   if (!ladenFinden(slug)) {
     return { ok: false, meldung: "Diesen Laden gibt es nicht." };
   }
-  if (!vorname || !nachname || !betreff) {
-    return { ok: false, meldung: "Bitte Vorname, Nachname und Betreff ausfüllen." };
-  }
-  if (!email && !telefon) {
-    return { ok: false, meldung: "Bitte E-Mail oder Telefon angeben, damit wir antworten können." };
-  }
-  if (inhalt.length > 2000) {
-    return { ok: false, meldung: "Die Nachricht ist zu lang (max. 2000 Zeichen)." };
+
+  // Nie dem Browser trauen: Zod prüft alle Felder nochmal auf dem Server
+  const felder = ["vorname", "nachname", "betreff", "email", "telefon", "inhalt"];
+  const werte = Object.fromEntries(felder.map((feld) => [feld, String(formData.get(feld) ?? "")]));
+  const ergebnis = kontaktSchema.safeParse(werte);
+
+  if (!ergebnis.success) {
+    // Die erste Fehlermeldung reicht für unser kleines Formular
+    return { ok: false, meldung: ergebnis.error.issues[0].message, werte };
   }
 
   await nachrichtSpeichern({
     laden: slug,
-    vorname,
-    nachname,
-    betreff,
-    email: email || undefined,
-    telefon: telefon || undefined,
-    inhalt: inhalt || undefined,
+    ...ergebnis.data,
     eingegangen:
       new Date().toLocaleString("de-DE", {
         timeZone: "Europe/Berlin",
