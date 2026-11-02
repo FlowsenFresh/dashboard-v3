@@ -1,43 +1,49 @@
-"use client";
-import { useState } from "react";
 import type { Nachricht } from "../lib/nachrichten";
+import { statusAendern } from "../nachrichten/actions";
+import StatusMarke from "./StatusMarke";
 
 const statusFarbe = {
-  neu: "text-red-500",
-  gelesen: "text-yellow-500",
-  beantwortet: "text-green-500",
-};
+  neu: "rot",
+  gelesen: "gelb",
+  beantwortet: "gruen",
+} as const;
+
+// Kein "use client" und kein useState: der Status kommt vom Server.
+// Der Knopf schickt ein Formular an die Server Action, die speichert dauerhaft.
 export default function NachrichtenKarte({ nachricht }: { nachricht: Nachricht }) {
-  const [status, setStatus] = useState(nachricht.status);
+  const status = nachricht.status;
 
   return (
-    <div className="bg-zinc-600 border rounded p-2">
-      <div className="flex justify-between items-center flex-wrap">
-        <span className="text-sm">{nachricht.eingegangen}</span>
-        <span className={`text-sm border rounded-full px-2 ${statusFarbe[status]}`}>{status}</span>
+    <article className="karte flex h-full flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-gedaempft">{nachricht.eingegangen}</span>
+        <StatusMarke text={status} farbe={statusFarbe[status]} />
       </div>
-      <h2 className="font-bold text-center text-xl p-2">{nachricht.betreff}</h2>
-      <div className="flex gap-1">
-        <p>{nachricht.vorname}</p>
-        <p>{nachricht.nachname}</p>
-      </div>
-      {nachricht.email && <p>{nachricht.email}</p>}
-      {nachricht.telefon && <p>{nachricht.telefon}</p>}
 
-      {nachricht.wunschDatum && (
-        <div className="flex gap-1">
-          <p>Wunschtermin: {nachricht.wunschDatum}</p>
-          <p>{nachricht.wunschZeit}</p>
-        </div>
-      )}
-      {nachricht.inhalt && <p>{nachricht.inhalt}</p>}
+      <div>
+        <h2 className="font-semibold">{nachricht.betreff}</h2>
+        <p className="text-sm text-gedaempft">
+          {nachricht.vorname} {nachricht.nachname}
+        </p>
+      </div>
+
+      {nachricht.inhalt && <p className="text-sm">{nachricht.inhalt}</p>}
+
+      <dl className="mt-auto space-y-1 text-sm text-gedaempft">
+        {nachricht.email && <dd>{nachricht.email}</dd>}
+        {nachricht.telefon && <dd>{nachricht.telefon}</dd>}
+        {nachricht.wunschDatum && (
+          <dd>
+            Wunschtermin: {nachricht.wunschDatum} {nachricht.wunschZeit}
+          </dd>
+        )}
+      </dl>
+
       {status === "neu" && (
-        <div className="flex justify-center">
-          <button onClick={() => setStatus("gelesen")} className="border rounded-xl text-sm px-1 mt-2 hover:bg-zinc-800">
-            Als gelesen markieren
-          </button>
-        </div>
+        <form action={statusAendern.bind(null, nachricht.id, "gelesen")}>
+          <button className="knopf-leise">Als gelesen markieren</button>
+        </form>
       )}
-    </div>
+    </article>
   );
 }

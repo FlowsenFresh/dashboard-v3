@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# lokale Daten (Nachrichten-Speicher bis zur echten Datenbank)
+/daten

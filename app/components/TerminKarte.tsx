@@ -1,25 +1,28 @@
 import type { Termin } from "../lib/termine";
+import StatusMarke from "./StatusMarke";
 
 export default function TerminKarte({ termin }: { termin: Termin }) {
   return (
-    <div className="bg-zinc-600 border rounded p-2">
-      <div className="flex justify-between items-center">
-        <span className="text-sm">
-          # {termin.auftragsnummer} • {termin.datum}
+    <article className="karte flex h-full flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-gedaempft">
+          #{termin.auftragsnummer} · {termin.datum}
         </span>
         {termin.erledigt ? (
-          <span className="text-green-500 border rounded-full px-2 text-sm">erledigt</span>
+          <StatusMarke text="erledigt" farbe="gruen" />
         ) : (
-          <span className="text-orange-500 border rounded-full px-2 text-sm">offen</span>
+          <StatusMarke text="offen" farbe="gelb" />
         )}
       </div>
-      <h2 className="font-bold text-center text-xl p-2">{termin.titel}</h2>
-      <div className="flex gap-1">
-        <p>{termin.vorname}</p>
-        <p>{termin.nachname}</p>
+
+      <div>
+        <h2 className="font-semibold">{termin.titel}</h2>
+        <p className="text-sm text-gedaempft">
+          {termin.vorname} {termin.nachname} · {termin.telefon}
+        </p>
       </div>
-      <p>{termin.telefon}</p>
-      {termin.notiz && <div className="border-t p-2 mt-2">{termin.notiz}</div>}
-    </div>
+
+      {termin.notiz && <p className="mt-auto border-t border-rand pt-3 text-sm">{termin.notiz}</p>}
+    </article>
   );
 }
