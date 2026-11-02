@@ -1,9 +1,21 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
-    <>
-      <div>
-        <h1 className="border rounded text-5xl text-center p-4 mb-4">Dashboard-v3</h1>
+    <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <h1 className="seitentitel">Willkommen zurück</h1>
+      <p className="mt-2 text-gedaempft">Hier hast du deine Termine und Nachrichten im Blick.</p>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <Link href="/termine" className="karte transition hover:border-zinc-600">
+          <h2 className="font-semibold">Termine</h2>
+          <p className="mt-1 text-sm text-gedaempft">Aufträge und was ansteht</p>
+        </Link>
+        <Link href="/nachrichten" className="karte transition hover:border-zinc-600">
+          <h2 className="font-semibold">Nachrichten</h2>
+          <p className="mt-1 text-sm text-gedaempft">Anfragen von der Laden-Seite</p>
+        </Link>
       </div>
-    </>
+    </main>
   );
 }

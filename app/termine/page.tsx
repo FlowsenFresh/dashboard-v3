@@ -3,10 +3,9 @@ import { beispielTermine } from "../lib/termine";
 
 export default function Termine() {
   return (
-    <main>
-      <h1 className="text-5xl text-center border rounded-full p-4 mb-4">Termine</h1>
-
-      <ul className="border rounded-xl grid lg:grid-cols-4 md:grid-cols-3 p-2 gap-3">
+    <main className="mx-auto w-full max-w-5xl px-4 py-10">
+      <h1 className="seitentitel mb-6">Termine</h1>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {beispielTermine.map((termin) => (
           <li key={termin.id}>
             <TerminKarte termin={termin} />

@@ -12,7 +12,7 @@ export function generateStaticParams() {
 // und den Inhalt nachliefern, sobald der slug aus der URL bekannt ist.
 export default function LadenSeite({ params }: PageProps<"/laden/[slug]">) {
   return (
-    <Suspense fallback={<p className="p-4 text-center">Lade Laden …</p>}>
+    <Suspense fallback={<p className="p-10 text-center text-gedaempft">Lade Laden …</p>}>
       <LadenInhalt params={params} />
     </Suspense>
   );
@@ -24,35 +24,34 @@ async function LadenInhalt({ params }: { params: PageProps<"/laden/[slug]">["par
   if (!laden) notFound();
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-4">
-      <section className="rounded-xl border p-6 text-center">
-        <p className="text-sm uppercase tracking-wide text-zinc-400">{laden.branche}</p>
-        <h1 className="text-5xl font-bold">{laden.name}</h1>
-        <p className="mt-2 text-xl">{laden.slogan}</p>
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-12">
+      <section className="py-6 text-center">
+        <p className="text-sm font-medium text-akzent">{laden.branche}</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">{laden.name}</h1>
+        <p className="mt-3 text-lg text-gedaempft">{laden.slogan}</p>
       </section>
 
-      <section className="rounded-xl border p-4">
-        <p>{laden.beschreibung}</p>
-      </section>
+      <p className="karte leading-relaxed">{laden.beschreibung}</p>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border p-4">
-          <h2 className="mb-2 font-bold">Öffnungszeiten</h2>
-          <ul>
+      <section className="grid gap-4 sm:grid-cols-2">
+        <div className="karte">
+          <h2 className="mb-2 text-sm font-medium text-gedaempft">Öffnungszeiten</h2>
+          <ul className="space-y-1">
             {laden.oeffnungszeiten.map((zeile) => (
               <li key={zeile}>{zeile}</li>
             ))}
           </ul>
         </div>
-        <div className="rounded-xl border p-4">
-          <h2 className="mb-2 font-bold">Kontakt</h2>
+        <div className="karte">
+          <h2 className="mb-2 text-sm font-medium text-gedaempft">Kontakt</h2>
           <p>{laden.adresse}</p>
           <p>{laden.telefon}</p>
         </div>
       </section>
 
-      <section className="rounded-xl border p-4">
-        <h2 className="mb-4 text-2xl font-bold">Schreib uns</h2>
+      <section className="karte">
+        <h2 className="text-xl font-semibold">Schreib uns</h2>
+        <p className="mb-5 mt-1 text-sm text-gedaempft">Wir melden uns so schnell wie möglich.</p>
         <KontaktFormular slug={laden.slug} />
       </section>
     </main>

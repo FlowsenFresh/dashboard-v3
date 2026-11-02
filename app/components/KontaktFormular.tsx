@@ -4,7 +4,7 @@ import { nachrichtSenden, type FormularStatus } from "../laden/[slug]/actions";
 
 const startStatus: FormularStatus = { ok: false, meldung: "" };
 
-const feld = "w-full rounded border bg-zinc-800 p-2";
+const feld = "eingabe";
 
 export default function KontaktFormular({ slug }: { slug: string }) {
   // bind hängt den Laden-Slug als ersten Parameter an die Action
@@ -15,7 +15,7 @@ export default function KontaktFormular({ slug }: { slug: string }) {
 
   if (status.ok) {
     return (
-      <p className="rounded border border-green-500 p-4 text-center text-green-400">
+      <p className="rounded-lg bg-emerald-500/10 p-4 text-center text-emerald-400">
         {status.meldung}
       </p>
     );
@@ -38,12 +38,9 @@ export default function KontaktFormular({ slug }: { slug: string }) {
         className={feld}
       />
 
-      {status.meldung && <p className="text-red-400">{status.meldung}</p>}
+      {status.meldung && <p className="text-sm text-red-400">{status.meldung}</p>}
 
-      <button
-        disabled={sendetGerade}
-        className="rounded-xl border p-2 hover:bg-zinc-700 disabled:opacity-50"
-      >
+      <button disabled={sendetGerade} className="knopf self-start">
         {sendetGerade ? "Wird gesendet …" : "Nachricht senden"}
       </button>
     </form>
