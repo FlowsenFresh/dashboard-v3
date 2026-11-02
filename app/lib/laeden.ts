@@ -7,6 +7,7 @@ export type Laden = {
   adresse: string;
   telefon: string;
   oeffnungszeiten: string[];
+  anliegen: string[]; // Auswahl im Kontaktformular, jeder Laden hat seine eigene
 };
 
 // Später kommt das aus der Datenbank und wird im Dashboard bearbeitet (CMS).
@@ -21,6 +22,7 @@ export const beispielLaeden: Laden[] = [
     adresse: "Marktstraße 1, 82515 Wolfratshausen",
     telefon: "08171 123456",
     oeffnungszeiten: ["Mo–Fr: 9–18 Uhr", "Sa: 9–13 Uhr"],
+    anliegen: ["Reparatur", "Inspektion", "Reifen & Schlauch", "Termin anfragen", "Sonstige Frage"],
   },
 ];
 

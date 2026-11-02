@@ -19,12 +19,13 @@ export async function nachrichtSenden(
   _vorher: FormularStatus,
   formData: FormData,
 ): Promise<FormularStatus> {
-  if (!ladenFinden(slug)) {
+  const laden = ladenFinden(slug);
+  if (!laden) {
     return { ok: false, meldung: "Diesen Laden gibt es nicht." };
   }
 
   // Nie dem Browser trauen: Zod prüft alle Felder nochmal auf dem Server
-  const felder = ["vorname", "nachname", "betreff", "email", "telefon", "inhalt"];
+  const felder = ["anliegen", "vorname", "nachname", "betreff", "email", "telefon", "inhalt"];
   const werte = Object.fromEntries(felder.map((feld) => [feld, String(formData.get(feld) ?? "")]));
   const ergebnis = kontaktSchema.safeParse(werte);
 
@@ -33,9 +34,16 @@ export async function nachrichtSenden(
     return { ok: false, meldung: ergebnis.error.issues[0].message, werte };
   }
 
+  const daten = ergebnis.data;
+  // Nur Anliegen annehmen, die dieser Laden auch anbietet
+  if (!laden.anliegen.includes(daten.anliegen)) {
+    return { ok: false, meldung: "Bitte wähle ein Anliegen aus der Liste.", werte };
+  }
+
   await nachrichtSpeichern({
     laden: slug,
-    ...ergebnis.data,
+    ...daten,
+    betreff: daten.betreff ?? daten.anliegen, // ohne Betreff nehmen wir das Anliegen
     eingegangen:
       new Date().toLocaleString("de-DE", {
         timeZone: "Europe/Berlin",

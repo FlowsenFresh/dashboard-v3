@@ -7,11 +7,11 @@ export default function Home() {
       <p className="mt-2 text-gedaempft">Hier hast du deine Termine und Nachrichten im Blick.</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Link href="/termine" className="karte transition hover:border-zinc-600">
+        <Link href="/termine" className="karte-link">
           <h2 className="font-semibold">Termine</h2>
           <p className="mt-1 text-sm text-gedaempft">Aufträge und was ansteht</p>
         </Link>
-        <Link href="/nachrichten" className="karte transition hover:border-zinc-600">
+        <Link href="/nachrichten" className="karte-link">
           <h2 className="font-semibold">Nachrichten</h2>
           <p className="mt-1 text-sm text-gedaempft">Anfragen von der Laden-Seite</p>
         </Link>
