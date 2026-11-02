@@ -13,6 +13,9 @@ export default function Kopfzeile() {
         <Link href={"/nachrichten"} className="hover:underline">
           Nachrichten
         </Link>
+        <Link href={"/laden/radl-huber"} className="hover:underline">
+          Laden-Seite
+        </Link>
       </nav>
     </header>
   );

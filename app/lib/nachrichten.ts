@@ -1,5 +1,6 @@
 export type Nachricht = {
   readonly id: number;
+  laden?: string; // slug des Ladens, über den die Nachricht kam
   betreff: string;
   vorname: string;
   nachname: string;
