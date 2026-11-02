@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-hintergrund: var(--color-zinc-900);
+  --color-schrift: var(--color-stone-100);
+}
