@@ -21,59 +21,109 @@ async function main() {
     return;
   }
 
-  const [michael, menni, max, moritz, manfred] = await db
+  const [sabine, jonas, lena, thomas, aylin, peter, max, moritz, manfred] = await db
     .insert(kontakte)
     .values([
       {
         ladenId: laden.id,
-        vorname: "Michael",
-        nachname: "Mustermann",
-        email: "email@email.de",
-        telefon: "0160 1234567",
+        vorname: "Sabine",
+        nachname: "Wagner",
+        email: "sabine.wagner@web.de",
+        telefon: "0171 4455667",
       },
-      { ladenId: laden.id, vorname: "Menni", nachname: "Mustermann", email: "menni@email.de" },
+      { ladenId: laden.id, vorname: "Jonas", nachname: "Berger", telefon: "0151 2233445" },
+      { ladenId: laden.id, vorname: "Lena", nachname: "Hofmann", email: "lena.hofmann@gmx.de" },
+      {
+        ladenId: laden.id,
+        vorname: "Thomas",
+        nachname: "Maier",
+        email: "t.maier@t-online.de",
+        telefon: "08171 98765",
+      },
+      {
+        ladenId: laden.id,
+        vorname: "Aylin",
+        nachname: "Demir",
+        email: "aylin.demir@gmail.com",
+        telefon: "0176 3344556",
+      },
+      { ladenId: laden.id, vorname: "Peter", nachname: "Schmid", telefon: "0160 7788990" },
       { ladenId: laden.id, vorname: "Max", nachname: "Mustermann", telefon: "0160 1234567" },
       { ladenId: laden.id, vorname: "Moritz", nachname: "Mustermann", telefon: "0160 1234567" },
       { ladenId: laden.id, vorname: "Manfred", nachname: "Mustermann", telefon: "0160 1234567" },
     ])
     .returning();
 
+  // Jede Nachricht hat ein Anliegen aus der Liste des Ladens, damit man später zählen kann
   await db.insert(nachrichten).values([
     {
       ladenId: laden.id,
-      kontaktId: michael.id,
+      kontaktId: sabine.id,
       anliegen: "Reparatur",
-      betreff: "Bremsen wechseln",
-      wunschDatum: "2026-10-19",
-      wunschZeit: "15:00",
+      betreff: "Hinterradbremse quietscht",
+      inhalt:
+        "Servus, meine Scheibenbremse hinten quietscht seit ein paar Tagen ziemlich laut. Könnt ihr euch das anschauen?",
       status: "neu",
-      eingegangenAm: new Date("2026-10-18T15:00:00+02:00"),
+      eingegangenAm: new Date("2026-11-02T17:42:00+01:00"),
     },
     {
       ladenId: laden.id,
-      kontaktId: menni.id,
+      kontaktId: jonas.id,
       anliegen: "Reifen & Schlauch",
-      betreff: "Reifenwechseln kosten?",
-      inhalt: "Servus habts ihr was frei ?",
-      status: "gelesen",
-      eingegangenAm: new Date("2026-10-18T15:30:00+02:00"),
-    },
-    {
-      ladenId: laden.id,
-      kontaktId: michael.id,
-      anliegen: "Inspektion",
-      betreff: "Frühjahrscheck",
-      status: "beantwortet",
-      eingegangenAm: new Date("2026-10-18T14:00:00+02:00"),
-    },
-    {
-      ladenId: laden.id,
-      kontaktId: michael.id,
-      anliegen: "Termin anfragen",
-      betreff: "Was frei am 18.10 - 16:00 Uhr",
-      inhalt: "Servus habts ihr was frei ?",
+      betreff: "Platten am Kinderrad",
+      inhalt: "Mein Sohn hat einen Platten am 20-Zoll-Rad. Habt ihr den Schlauch da?",
       status: "neu",
-      eingegangenAm: new Date("2026-10-18T16:00:00+02:00"),
+      eingegangenAm: new Date("2026-11-02T09:15:00+01:00"),
+    },
+    {
+      ladenId: laden.id,
+      kontaktId: lena.id,
+      anliegen: "Inspektion",
+      betreff: "Inspektion E-Bike",
+      inhalt:
+        "Mein E-Bike (Cube, 2 Jahre alt) braucht die jährliche Inspektion. Wie lange dauert das ungefähr?",
+      wunschDatum: "2026-11-08",
+      wunschZeit: "10:00",
+      status: "gelesen",
+      eingegangenAm: new Date("2026-11-01T14:30:00+01:00"),
+    },
+    {
+      ladenId: laden.id,
+      kontaktId: thomas.id,
+      anliegen: "Termin anfragen",
+      betreff: "Termin für Wintercheck",
+      inhalt: "Hätte gern einen Termin nächste Woche, am liebsten Dienstag Nachmittag.",
+      wunschDatum: "2026-11-10",
+      wunschZeit: "15:30",
+      status: "beantwortet",
+      eingegangenAm: new Date("2026-10-31T11:05:00+01:00"),
+    },
+    {
+      ladenId: laden.id,
+      kontaktId: aylin.id,
+      anliegen: "Sonstige Frage",
+      betreff: "Gebrauchte Räder?",
+      inhalt: "Verkauft ihr auch gebrauchte Räder oder nehmt ihr mein altes in Zahlung?",
+      status: "gelesen",
+      eingegangenAm: new Date("2026-10-30T19:20:00+01:00"),
+    },
+    {
+      ladenId: laden.id,
+      kontaktId: peter.id,
+      anliegen: "Reparatur",
+      betreff: "Schaltung springt",
+      inhalt: "Die Kette springt bei den kleinen Gängen ständig raus.",
+      status: "neu",
+      eingegangenAm: new Date("2026-10-29T08:50:00+01:00"),
+    },
+    {
+      ladenId: laden.id,
+      kontaktId: sabine.id,
+      anliegen: "Reifen & Schlauch",
+      betreff: "Winterreifen montieren",
+      inhalt: "Könnt ihr mir Spikereifen aufziehen? Die Reifen bringe ich selber mit.",
+      status: "beantwortet",
+      eingegangenAm: new Date("2026-10-27T16:10:00+01:00"),
     },
   ]);
 
