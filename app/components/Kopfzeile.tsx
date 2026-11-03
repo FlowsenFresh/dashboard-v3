@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { abmelden } from "../login/actions";
+import { abmelden } from "@/app/(dashboard)/login/actions";
 import { asc } from "drizzle-orm";
 import { db } from "../lib/db";
 import { laeden } from "../lib/db/schema";

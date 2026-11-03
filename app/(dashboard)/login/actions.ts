@@ -3,10 +3,10 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { db } from "../lib/db";
-import { benutzer } from "../lib/db/schema";
-import { passwortHashen, passwortPruefen } from "../lib/passwort";
-import { sitzungBeenden, sitzungStarten } from "../lib/sitzung";
+import { db } from "@/app/lib/db";
+import { benutzer } from "@/app/lib/db/schema";
+import { passwortHashen, passwortPruefen } from "@/app/lib/passwort";
+import { sitzungBeenden, sitzungStarten } from "@/app/lib/sitzung";
 
 export type LoginStatus = { fehler?: string; email?: string };
 

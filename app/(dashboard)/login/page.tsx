@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import LoginFormular from "../components/LoginFormular";
-import { aktuellerBenutzer } from "../lib/sitzung";
+import LoginFormular from "@/app/components/LoginFormular";
+import { aktuellerBenutzer } from "@/app/lib/sitzung";
 
 export default function Login({ searchParams }: PageProps<"/login">) {
   return (

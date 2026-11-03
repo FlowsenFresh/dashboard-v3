@@ -1,5 +1,5 @@
 "use client";
-import { ladenWechseln } from "../admin/actions";
+import { ladenWechseln } from "@/app/(dashboard)/admin/actions";
 
 type Props = { laeden: { id: number; name: string }[]; aktuell: number | null };
 

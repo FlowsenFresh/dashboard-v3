@@ -1,6 +1,6 @@
 "use client";
 import { useActionState } from "react";
-import { anmelden, type LoginStatus } from "../login/actions";
+import { anmelden, type LoginStatus } from "@/app/(dashboard)/login/actions";
 
 export default function LoginFormular({ weiter }: { weiter: string }) {
   const [status, absenden, sendetGerade] = useActionState(anmelden, {} as LoginStatus);

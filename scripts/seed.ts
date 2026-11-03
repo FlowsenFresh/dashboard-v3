@@ -5,13 +5,18 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { kontakte, laeden, nachrichten, termine } from "../app/lib/db/schema";
+import { beispielLaeden } from "../app/lib/laeden";
 
 config({ path: ".env.local" });
 const db = drizzle(neon(process.env.DATABASE_URL!));
 
 async function main() {
-  // Laden anlegen. "onConflictDoNothing" = gibt es ihn schon, passiert nichts.
-  await db.insert(laeden).values({ slug: "radl-huber", name: "Radl Huber" }).onConflictDoNothing();
+  // Alle Beispiel-Läden aus app/lib/laeden.ts anlegen, damit ihr Kontaktformular funktioniert.
+  // "onConflictDoNothing" = gibt es ihn schon, passiert nichts. Darum gefahrlos wiederholbar.
+  await db
+    .insert(laeden)
+    .values(beispielLaeden.map(({ slug, name }) => ({ slug, name })))
+    .onConflictDoNothing();
   const [laden] = await db.select().from(laeden).where(eq(laeden.slug, "radl-huber"));
 
   // Nur füllen, wenn noch keine Nachrichten da sind. So kann man das Skript gefahrlos nochmal starten.

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import TerminKarte from "../components/TerminKarte";
-import { alleTermine } from "../lib/termineSpeicher";
+import TerminKarte from "@/app/components/TerminKarte";
+import { alleTermine } from "@/app/lib/termineSpeicher";
 
 export default function Termine() {
   return (
