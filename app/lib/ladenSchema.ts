@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Prüft alles, was im Dashboard unter /webseite gespeichert wird.
+// Prüft alles, was im Bearbeitungsmodus auf der Laden-Seite gespeichert wird.
 // Wie beim Kontaktformular: nie dem Browser trauen, der Server prüft nochmal.
 
 const text = (max: number) => z.string().trim().max(max, `Höchstens ${max} Zeichen.`);

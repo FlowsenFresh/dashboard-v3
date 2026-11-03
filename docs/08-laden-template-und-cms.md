@@ -85,31 +85,19 @@ Besucher ──▶ /laden/radl-huber ──▶ Cache da? ── ja ──▶ sof
                                         │
                                        nein ──▶ Datenbank ──▶ merken ──▶ anzeigen
 
-Dashboard „Speichern“ ──▶ Datenbank ändern ──▶ updateTag ──▶ Cache von radl-huber weg
+„Speichern“ (Doppelklick-Modus) ──▶ Datenbank ändern ──▶ updateTag ──▶ Cache von radl-huber weg
 ```
 
-## Das CMS: `/webseite` im Dashboard
+## Das alte Formular unter `/webseite` (gibt es seit PR #14 nicht mehr)
 
-- **Ladenbesitzer** sehen immer ihren eigenen Laden.
-- **admin** (du) bearbeitet den Laden, für den du gerade einen Zugang per Code hast (siehe
-  [10-admin-und-zugangscode.md](10-admin-und-zugangscode.md)). Ohne Zugang
-  kommt ein Hinweis. Die öffentliche Seite kannst du aber immer per Doppelklick bearbeiten.
+Bis PR #13 gab es im Dashboard unter **Webseite** ein großes Formular mit allen Feldern.
+Seit PR #14 bearbeitet man **nur noch per Doppelklick** direkt auf der Laden-Seite (siehe unten).
+Alles, was das Formular konnte, geht dort auch: Texte, Listen, Farbe.
 
-Ablauf beim Speichern (`app/(dashboard)/webseite/actions.ts`):
-
-1. `benutzerPflicht()`: Ist jemand angemeldet?
-2. Welcher Laden? **Aus der Sitzung**, nicht aus dem Formular (`sichtbarerLaden`). So kann ein
-   Ladenbesitzer nie die Seite eines anderen Ladens ändern, auch wenn er am Formular herumspielt.
-3. Zod prüft alles (`app/lib/ladenSchema.ts`): Längen, E-Mail, und dass die Farbe ein echter
-   Farbcode wie `#38bdf8` ist. Leere Zeilen fallen weg.
-4. In die Datenbank schreiben, dann `updateTag`.
-
-Das Formular (`app/components/WebseiteFormular.tsx`) hält alles in einem `useState`. Listen wie
-Leistungen oder Öffnungszeiten kann man mit „+“ erweitern und mit „entfernen“ kürzen. Beim
-Absenden geht alles als ein JSON-Text im versteckten Feld `daten` an den Server. Das ist bei
-Listen viel einfacher als hundert einzelne Felder.
-
-Der Speichern-Knopf klebt unten am Bildschirm (`sticky bottom-0`), damit man nicht scrollen muss.
+Der Menüpunkt **Webseite** bleibt. `/webseite` prüft nur noch, ob man darf, und schickt dann zu
+`/laden/<slug>?bearbeiten`. Durch `?bearbeiten` ist der Bearbeitungsmodus gleich an
+(`Leiste.tsx` schaut beim Öffnen in die Adresse und nimmt `?bearbeiten` danach wieder raus,
+damit es beim Neuladen nicht nochmal startet).
 
 ## Bearbeiten direkt auf der Seite (Doppelklick)
 
@@ -118,7 +106,8 @@ Danach hat jeder Text einen gestrichelten Rahmen, und ein **Doppelklick** macht 
 daraus. Enter oder ein Klick daneben übernimmt, Escape bricht ab. Bei Listen gibt es „+“ und „✕“.
 Unten in der Leiste: Farbe wählen, **Verwerfen** oder **Speichern**.
 
-**Wer sieht den Knopf?** Nur du (admin) und der Inhaber dieses Ladens. Normale Besucher bekommen
+**Wer sieht den Knopf?** Nur du (admin), der Inhaber dieses Ladens und Mitarbeiter, denen der
+Inhaber es unter **Team** erlaubt hat (siehe [11-team.md](11-team.md)). Normale Besucher bekommen
 ihn gar nicht erst geschickt. Und noch wichtiger: Die Action `seiteSpeichern` prüft beim Speichern
 selbst auf dem Server nochmal (`darfLadenBearbeiten` in `sitzung.ts`). Ein versteckter Knopf allein
 wäre kein Schutz, weil jeder eine Action auch von Hand aufrufen kann.
@@ -141,14 +130,15 @@ Jeder Text weiß über seinen **Pfad**, wohin er gehört, z. B. `slogan` oder `l
 **Warum bleibt die Seite trotzdem schnell?** Die Seite selbst kommt weiter aus dem Cache. Nur die
 kleine Leiste steht in `<Suspense>` und wird pro Besuch geprüft, weil sie das Cookie lesen muss.
 
-Gespeichert wird über denselben Weg wie im Dashboard (`app/lib/ladenSpeichern.ts`): Zod prüfen,
-in die Datenbank schreiben, `updateTag`. Das Formular unter **Webseite** im Dashboard gibt es
-weiterhin, falls man lieber alles auf einmal sieht.
+Gespeichert wird in `app/lib/ladenSpeichern.ts`: Zod prüft alles (`app/lib/ladenSchema.ts`:
+Längen, E-Mail, echter Farbcode wie `#38bdf8`), dann in die Datenbank schreiben, `updateTag`.
+Welcher Laden, kommt aus der Adresse, aber `seiteSpeichern` prüft mit `darfLadenBearbeiten`,
+ob die angemeldete Person genau diesen Laden ändern darf.
 
 ## Neuen Laden anlegen (bis es den admin-Bereich gibt)
 
 1. Zeile in `laeden` mit `slug` und `name` anlegen (z. B. in `vp run db:studio`).
-2. Im Dashboard oben den Laden wählen, unter **Webseite** alles ausfüllen, speichern.
+2. Die Laden-Seite öffnen, „✎ Seite bearbeiten“, alles per Doppelklick ausfüllen, speichern.
 3. Die Seite ist unter `/laden/<slug>` erreichbar.
 
 ## Beispiel-Läden

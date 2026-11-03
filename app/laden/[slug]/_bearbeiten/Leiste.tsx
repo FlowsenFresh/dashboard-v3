@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { seiteSpeichern } from "../actions";
 import { useModus } from "./Kontext";
 
@@ -11,6 +11,18 @@ export default function Leiste({ slug }: { slug: string }) {
   const modus = useModus();
   const [speichertGerade, startTransition] = useTransition();
   const [meldung, setMeldung] = useState<{ ok: boolean; text: string } | null>(null);
+
+  // Kommt man über "Webseite" im Dashboard (/laden/<slug>?bearbeiten), ist Bearbeiten gleich an.
+  // Danach nehmen wir ?bearbeiten wieder aus der Adresse, sonst startet es beim Neuladen wieder.
+  const starten = modus?.starten;
+  useEffect(() => {
+    const adresse = new URL(window.location.href);
+    if (!starten || !adresse.searchParams.has("bearbeiten")) return;
+    starten();
+    adresse.searchParams.delete("bearbeiten");
+    window.history.replaceState(null, "", adresse);
+  }, [starten]);
+
   if (!modus) return null;
 
   if (!modus.an) {

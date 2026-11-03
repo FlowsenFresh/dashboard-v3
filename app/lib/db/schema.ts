@@ -25,7 +25,7 @@ export const laeden = pgTable("laeden", {
   name: text("name").notNull(),
 
   // ── Inhalt der Webseite (CMS) ──
-  // Bearbeitet im Dashboard unter /webseite. Die Laden-Seite liest genau diese Spalten.
+  // Bearbeitet per Doppelklick auf der Laden-Seite. Die Seite liest genau diese Spalten.
   branche: text("branche").notNull().default(""),
   slogan: text("slogan").notNull().default(""),
   beschreibung: text("beschreibung").notNull().default(""),

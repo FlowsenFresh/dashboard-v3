@@ -95,6 +95,12 @@ Mit einer lokalen Postgres-Datenbank und echtem Browser (Playwright):
 - „Neues Passwort“: Anna ist sofort abgemeldet
 - „Entfernen“: Login ist weg
 
+## Webseite bearbeiten = nur noch Doppelklick
+
+Das alte Formular unter `/webseite` ist weg. Wer das Recht hat, klickt im Dashboard auf
+**Webseite** und landet direkt auf der Laden-Seite mit eingeschaltetem Bearbeitungsmodus.
+Mehr dazu in [08-laden-template-und-cms.md](08-laden-template-und-cms.md).
+
 ## Später vielleicht
 
 - Mehrere Inhaber (z. B. Ehepaar): ein Mitarbeiter wird zum Mit-Inhaber
