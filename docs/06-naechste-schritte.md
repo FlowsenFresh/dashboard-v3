@@ -11,9 +11,7 @@ Stand 03.11.2026. Erledigt ist: Laden-Seite als Template, CMS, Formular mit Anli
 2. ~~**Laden-Inhalte in die Datenbank (CMS)**~~ erledigt in PR #10, siehe
    [08-laden-template-und-cms.md](08-laden-template-und-cms.md).
    - Später vielleicht: Bilder (Logo, Fotos), Abschnitte ein- und ausschalten, Reihenfolge wählen.
-3. **Team-Seite für den Ladeninhaber**: Der Inhaber ist der admin seines Ladens (er zahlt ja auch 😄).
-   Er legt Logins für Mitarbeiter an und hakt an, wer die Webseite bearbeiten darf. Bisher dürfen
-   das nur du und der Inhaber (`darfLadenBearbeiten` in `sitzung.ts`).
+3. ~~**Team-Seite für den Ladeninhaber**~~ erledigt in PR #14, siehe [11-team.md](11-team.md).
 4. **admin-Bereich**: neue Läden anlegen (Name + Slug), Logins für Ladenbesitzer anlegen
    (statt nur per Skript). Die Inhalte füllt man danach im CMS.
 5. **Termine im Dashboard anlegen und bearbeiten** (bisher nur anzeigen).

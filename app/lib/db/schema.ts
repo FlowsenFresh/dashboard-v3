@@ -109,7 +109,8 @@ export const termine = pgTable(
 );
 
 // ── Login ──────────────────────────────────────────────────────────
-// "admin" = Flo, sieht alle Läden. "laden" = Ladenbesitzer, sieht nur seinen Laden.
+// "admin" = Flo, sieht alle Läden. "laden" = jemand aus einem Laden (Inhaber oder Mitarbeiter),
+// sieht nur seinen Laden.
 export const benutzerRolle = pgEnum("benutzer_rolle", ["admin", "laden"]);
 
 export const benutzer = pgTable("benutzer", {
@@ -120,6 +121,14 @@ export const benutzer = pgTable("benutzer", {
   rolle: benutzerRolle("rolle").notNull().default("laden"),
   // Bei "laden" der eigene Laden, bei "admin" leer
   ladenId: integer("laden_id").references(() => laeden.id, { onDelete: "cascade" }),
+  // ── Team im Laden (nur bei rolle "laden") ──
+  // Inhaber = der "Admin" seines Ladens: verwaltet das Team und gibt den Support-Code.
+  // Mitarbeiter legt der Inhaber unter /team an. Die haben hier false.
+  istInhaber: boolean("ist_inhaber").notNull().default(false),
+  // Darf die Webseite des Ladens bearbeiten? Der Inhaber darf das immer,
+  // bei Mitarbeitern schaltet er es an oder aus.
+  darfWebseite: boolean("darf_webseite").notNull().default(false),
+  name: text("name"), // z. B. "Anna", damit man im Team weiß, wer wer ist
   erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
 });
 

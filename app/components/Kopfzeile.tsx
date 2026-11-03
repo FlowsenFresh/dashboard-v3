@@ -5,14 +5,24 @@ import { abmelden } from "@/app/(dashboard)/login/actions";
 import { zurueckZumAdmin } from "@/app/(admin)/admin/actions";
 import { db } from "../lib/db";
 import { laeden } from "../lib/db/schema";
-import { aktuellerBenutzer } from "../lib/sitzung";
+import {
+  aktuellerBenutzer,
+  darfWebseiteBearbeiten,
+  istLadenInhaber,
+  type Benutzer,
+} from "../lib/sitzung";
 import { uhrzeit } from "../lib/zeit";
 
-const links = [
-  { href: "/termine", text: "Termine" },
-  { href: "/nachrichten", text: "Nachrichten" },
-  { href: "/webseite", text: "Webseite" },
-];
+// Welche Links jemand sieht, hängt von seinen Rechten ab. Das ist nur fürs Auge:
+// die echte Prüfung steht auf jeder Seite und in jeder Action noch einmal.
+function linksFuer(angemeldet: Benutzer) {
+  return [
+    { href: "/termine", text: "Termine" },
+    { href: "/nachrichten", text: "Nachrichten" },
+    ...(darfWebseiteBearbeiten(angemeldet) ? [{ href: "/webseite", text: "Webseite" }] : []),
+    ...(istLadenInhaber(angemeldet) ? [{ href: "/team", text: "Team" }] : []),
+  ];
+}
 
 // Kopfzeile des Kunden-Dashboards. So sieht es auch der Ladeninhaber.
 export default function Kopfzeile() {
@@ -44,7 +54,7 @@ async function Menue() {
 
   return (
     <div className="flex items-center gap-4 text-sm text-gedaempft sm:gap-6">
-      {links.map((link) => (
+      {linksFuer(angemeldet).map((link) => (
         <Link key={link.href} href={link.href} className="transition hover:text-schrift">
           {link.text}
         </Link>

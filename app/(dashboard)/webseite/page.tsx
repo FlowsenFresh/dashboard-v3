@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import WebseiteFormular from "@/app/components/WebseiteFormular";
 import { ladenNachId } from "@/app/lib/laeden";
-import { benutzerPflicht, sichtbarerLaden } from "@/app/lib/sitzung";
+import { benutzerPflicht, darfWebseiteBearbeiten, sichtbarerLaden } from "@/app/lib/sitzung";
 
 // Das CMS: hier pflegt der Ladenbesitzer die Inhalte seiner Webseite selbst.
 // Der admin bearbeitet den Laden, den er oben im Laden-Wechsler gewählt hat.
@@ -23,6 +23,14 @@ export default function Webseite() {
 async function Bearbeiten() {
   const angemeldet = await benutzerPflicht();
   const ladenId = sichtbarerLaden(angemeldet);
+
+  if (!darfWebseiteBearbeiten(angemeldet)) {
+    return (
+      <p className="karte text-gedaempft">
+        Die Webseite bearbeitet bei euch der Inhaber. Er kann es dir unter „Team“ erlauben.
+      </p>
+    );
+  }
 
   if (ladenId === -1) {
     return (

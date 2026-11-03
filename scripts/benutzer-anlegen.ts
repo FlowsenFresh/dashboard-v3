@@ -38,6 +38,9 @@ async function main() {
     passwortHash: await passwortHashen(passwort),
     rolle: slug ? ("laden" as const) : ("admin" as const),
     ladenId,
+    // Wer hier mit Laden angelegt wird, ist der Inhaber. Mitarbeiter legt er selbst unter /team an.
+    istInhaber: Boolean(slug),
+    darfWebseite: Boolean(slug),
   };
   // Gibt es die E-Mail schon, wird sie aktualisiert (z. B. Passwort vergessen)
   await db
@@ -45,7 +48,7 @@ async function main() {
     .values(werte)
     .onConflictDoUpdate({ target: benutzer.email, set: werte });
 
-  console.log(`Fertig: ${email} (${werte.rolle}${slug ? `, ${slug}` : ""})`);
+  console.log(`Fertig: ${email} (${slug ? `Inhaber von ${slug}` : "admin"})`);
 }
 
 main().catch((fehler) => {

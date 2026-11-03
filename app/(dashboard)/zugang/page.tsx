@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import CodeErzeugen from "@/app/components/CodeErzeugen";
 import { laufenderZugriff, zugangsProtokoll } from "@/app/lib/freigaben";
-import { benutzerPflicht } from "@/app/lib/sitzung";
+import { benutzerPflicht, istLadenInhaber } from "@/app/lib/sitzung";
 import { datumUndUhrzeit, uhrzeit } from "@/app/lib/zeit";
 import { zugangSofortBeenden } from "./actions";
 
@@ -24,7 +24,7 @@ export default function Zugang() {
 
 async function Inhalt() {
   const angemeldet = await benutzerPflicht();
-  if (angemeldet.rolle !== "laden" || angemeldet.ladenId === null) {
+  if (!istLadenInhaber(angemeldet)) {
     return (
       <p className="karte mt-8 text-gedaempft">
         Diese Seite ist für den Inhaber des Ladens. Nur er kann Zugang geben.
