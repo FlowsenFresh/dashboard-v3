@@ -85,3 +85,34 @@ export const termine = pgTable(
   },
   (t) => [index("termine_laden_idx").on(t.ladenId, t.datum)],
 );
+
+// ── Login ──────────────────────────────────────────────────────────
+// "admin" = Flo, sieht alle Läden. "laden" = Ladenbesitzer, sieht nur seinen Laden.
+export const benutzerRolle = pgEnum("benutzer_rolle", ["admin", "laden"]);
+
+export const benutzer = pgTable("benutzer", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(), // immer klein geschrieben gespeichert
+  // Nie das Passwort selbst, nur der langsame scrypt-Hash (siehe app/lib/passwort.ts)
+  passwortHash: text("passwort_hash").notNull(),
+  rolle: benutzerRolle("rolle").notNull().default("laden"),
+  // Bei "laden" der eigene Laden, bei "admin" leer
+  ladenId: integer("laden_id").references(() => laeden.id, { onDelete: "cascade" }),
+  erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// Eine Zeile pro Anmeldung. Der Browser bekommt ein zufälliges Token im Cookie,
+// hier steht nur dessen SHA-256-Hash. Wer die Datenbank liest, kann sich damit nicht anmelden.
+// Abmelden = Zeile löschen. Das geht auch "aus der Ferne", z. B. alle Sitzungen eines Benutzers.
+export const sitzungen = pgTable(
+  "sitzungen",
+  {
+    id: text("id").primaryKey(), // SHA-256 vom Token, als Hex-Text
+    benutzerId: integer("benutzer_id")
+      .notNull()
+      .references(() => benutzer.id, { onDelete: "cascade" }),
+    laeuftAbAm: timestamp("laeuft_ab_am", { withTimezone: true }).notNull(),
+    erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("sitzungen_benutzer_idx").on(t.benutzerId)],
+);
