@@ -7,7 +7,7 @@ import { laeden } from "./db/schema";
 // ── Das Template ──────────────────────────────────────────────────
 // Jede Laden-Webseite ist dieselbe Seite (app/laden/[slug]/page.tsx),
 // nur mit anderen Daten. Die Daten stehen in der Tabelle "laeden" und werden
-// im Dashboard unter /webseite bearbeitet (unser kleines CMS).
+// direkt auf der Laden-Seite per Doppelklick bearbeitet (unser kleines CMS).
 // Was leer bleibt, wird auf der Seite einfach nicht angezeigt.
 
 export type Leistung = {

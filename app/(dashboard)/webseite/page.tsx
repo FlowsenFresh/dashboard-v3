@@ -1,49 +1,44 @@
 import { Suspense } from "react";
-import WebseiteFormular from "@/app/components/WebseiteFormular";
+import { redirect } from "next/navigation";
 import { ladenNachId } from "@/app/lib/laeden";
 import { benutzerPflicht, darfWebseiteBearbeiten, sichtbarerLaden } from "@/app/lib/sitzung";
 
-// Das CMS: hier pflegt der Ladenbesitzer die Inhalte seiner Webseite selbst.
-// Der admin bearbeitet den Laden, den er oben im Laden-Wechsler gewählt hat.
+// Die Webseite bearbeitet man direkt auf der Laden-Seite (Doppelklick auf einen Text).
+// Das alte Formular gibt es nicht mehr. Diese Adresse bleibt, damit der Menüpunkt "Webseite"
+// einfach funktioniert: sie prüft das Recht und schickt dann zur Laden-Seite mit ?bearbeiten,
+// dort ist der Bearbeitungsmodus dann gleich an.
 export default function Webseite() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
       <h1 className="seitentitel">Webseite bearbeiten</h1>
-      <p className="mb-8 mt-2 text-gedaempft">
-        Was du hier speicherst, steht sofort auf der Laden-Seite. Tipp: Auf der Laden-Seite selbst
-        gibt es unten den Knopf „Seite bearbeiten“. Dann änderst du jeden Text per Doppelklick.
-      </p>
-      <Suspense fallback={<p className="text-gedaempft">Lade Inhalte …</p>}>
-        <Bearbeiten />
+      <Suspense fallback={<p className="mt-8 text-gedaempft">Öffne deine Webseite …</p>}>
+        <Weiterleiten />
       </Suspense>
     </main>
   );
 }
 
-async function Bearbeiten() {
+async function Weiterleiten() {
   const angemeldet = await benutzerPflicht();
-  const ladenId = sichtbarerLaden(angemeldet);
 
   if (!darfWebseiteBearbeiten(angemeldet)) {
     return (
-      <p className="karte text-gedaempft">
+      <p className="karte mt-8 text-gedaempft">
         Die Webseite bearbeitet bei euch der Inhaber. Er kann es dir unter „Team“ erlauben.
       </p>
     );
   }
 
-  if (ladenId === -1) {
+  const ladenId = sichtbarerLaden(angemeldet);
+  const laden = ladenId === -1 ? null : await ladenNachId(ladenId);
+  if (!laden) {
     return (
-      <p className="karte text-gedaempft">
-        Du hast gerade keinen Zugang zu einem Laden. Öffne ihn im Admin-Bereich mit dem Code vom
-        Inhaber, oder bearbeite die Webseite direkt auf der Laden-Seite.
+      <p className="karte mt-8 text-gedaempft">
+        Du hast gerade keinen Zugang zu einem Laden. Öffne die Laden-Seite direkt, dort kannst du
+        als admin per Doppelklick bearbeiten.
       </p>
     );
   }
 
-  const laden = await ladenNachId(ladenId);
-  if (!laden) return <p className="karte text-gedaempft">Diesen Laden gibt es nicht.</p>;
-
-  // key: wechselt der admin den Laden, startet das Formular frisch mit den neuen Daten
-  return <WebseiteFormular key={laden.id} laden={laden} />;
+  redirect(`/laden/${laden.slug}?bearbeiten`);
 }

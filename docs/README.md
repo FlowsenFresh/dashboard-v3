@@ -44,5 +44,4 @@ Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 | #11 | Laden-Seite direkt bearbeiten: „Seite bearbeiten“-Knopf, Texte per Doppelklick ändern (nur admin und Ladeninhaber)  |
 | #12 | Eigener Admin-Bereich `/admin` mit Zahlen, Kunden-Dashboard nur mit Zugangscode vom Inhaber, Aufrufe zählen         |
 | #13 | Aufrufe im Entwicklungsmodus nicht doppelt zählen                                                                   |
-| #14 | Team-Seite: Inhaber legt Mitarbeiter-Logins an und entscheidet, wer die Webseite bearbeiten darf                    |
-| #15 | Fotos: Ladenfront als Hintergrund oben, Upload im Bearbeitungsmodus, Bildspeicher Vercel Blob (Frankfurt)          |
+| #14 | Team-Seite: Inhaber legt Mitarbeiter-Logins an und vergibt das Webseiten-Recht. Bearbeiten nur noch per Doppelklick |

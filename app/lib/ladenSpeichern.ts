@@ -9,8 +9,7 @@ import { ladenInhaltSchema } from "./ladenSchema";
 
 export type SpeichernStatus = { ok: boolean; meldung: string };
 
-// Gemeinsamer Teil fürs Speichern, egal ob aus dem Dashboard (/webseite)
-// oder direkt auf der Laden-Seite (Bearbeitungsmodus).
+// Speichert die Inhalte aus dem Bearbeitungsmodus (Doppelklick auf der Laden-Seite).
 // WICHTIG: Wer das aufruft, hat vorher geprüft, dass die Person diesen Laden ändern darf.
 export async function ladenInhaltSpeichern(
   ladenId: number,
