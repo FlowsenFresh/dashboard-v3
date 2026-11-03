@@ -1,0 +1,1 @@
+ALTER TABLE "laeden" ADD COLUMN "titelbild" text;

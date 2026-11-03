@@ -1,0 +1,852 @@
+{
+  "id": "97eb52e0-1b47-4145-b9fe-80e5776de32e",
+  "prevId": "9694daa1-cdec-4a47-ad63-0a7c0f2bffa1",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.aufrufe": {
+      "name": "aufrufe",
+      "schema": "",
+      "columns": {
+        "laden_id": {
+          "name": "laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tag": {
+          "name": "tag",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anzahl": {
+          "name": "anzahl",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "aufrufe_laden_id_laeden_id_fk": {
+          "name": "aufrufe_laden_id_laeden_id_fk",
+          "tableFrom": "aufrufe",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "aufrufe_laden_id_tag_pk": {
+          "name": "aufrufe_laden_id_tag_pk",
+          "columns": [
+            "laden_id",
+            "tag"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.benutzer": {
+      "name": "benutzer",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "passwort_hash": {
+          "name": "passwort_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rolle": {
+          "name": "rolle",
+          "type": "benutzer_rolle",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'laden'"
+        },
+        "laden_id": {
+          "name": "laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ist_inhaber": {
+          "name": "ist_inhaber",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "darf_webseite": {
+          "name": "darf_webseite",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "benutzer_laden_id_laeden_id_fk": {
+          "name": "benutzer_laden_id_laeden_id_fk",
+          "tableFrom": "benutzer",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "benutzer_email_unique": {
+          "name": "benutzer_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.freigaben": {
+      "name": "freigaben",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "laden_id": {
+          "name": "laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code_hash": {
+          "name": "code_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code_gueltig_bis": {
+          "name": "code_gueltig_bis",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fehlversuche": {
+          "name": "fehlversuche",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "eingeloest_am": {
+          "name": "eingeloest_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "zugriff_bis": {
+          "name": "zugriff_bis",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "beendet_am": {
+          "name": "beendet_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "freigaben_laden_idx": {
+          "name": "freigaben_laden_idx",
+          "columns": [
+            {
+              "expression": "laden_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "erstellt_am",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "freigaben_laden_id_laeden_id_fk": {
+          "name": "freigaben_laden_id_laeden_id_fk",
+          "tableFrom": "freigaben",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kontakte": {
+      "name": "kontakte",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "laden_id": {
+          "name": "laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vorname": {
+          "name": "vorname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nachname": {
+          "name": "nachname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "kontakte_laden_idx": {
+          "name": "kontakte_laden_idx",
+          "columns": [
+            {
+              "expression": "laden_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "kontakte_laden_id_laeden_id_fk": {
+          "name": "kontakte_laden_id_laeden_id_fk",
+          "tableFrom": "kontakte",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.laeden": {
+      "name": "laeden",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "branche": {
+          "name": "branche",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "slogan": {
+          "name": "slogan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "beschreibung": {
+          "name": "beschreibung",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "farbe": {
+          "name": "farbe",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "titelbild": {
+          "name": "titelbild",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strasse": {
+          "name": "strasse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "plz_ort": {
+          "name": "plz_ort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "telefon": {
+          "name": "telefon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hinweis_zeiten": {
+          "name": "hinweis_zeiten",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leistungen": {
+          "name": "leistungen",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "oeffnungszeiten": {
+          "name": "oeffnungszeiten",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "anliegen": {
+          "name": "anliegen",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "ueber_uns": {
+          "name": "ueber_uns",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "termine_aufbewahren_monate": {
+          "name": "termine_aufbewahren_monate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 24
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "laeden_slug_unique": {
+          "name": "laeden_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.nachrichten": {
+      "name": "nachrichten",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "laden_id": {
+          "name": "laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kontakt_id": {
+          "name": "kontakt_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "anliegen": {
+          "name": "anliegen",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "betreff": {
+          "name": "betreff",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inhalt": {
+          "name": "inhalt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wunsch_datum": {
+          "name": "wunsch_datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wunsch_zeit": {
+          "name": "wunsch_zeit",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "nachricht_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'neu'"
+        },
+        "eingegangen_am": {
+          "name": "eingegangen_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "nachrichten_laden_idx": {
+          "name": "nachrichten_laden_idx",
+          "columns": [
+            {
+              "expression": "laden_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "eingegangen_am",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "nachrichten_laden_id_laeden_id_fk": {
+          "name": "nachrichten_laden_id_laeden_id_fk",
+          "tableFrom": "nachrichten",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "nachrichten_kontakt_id_kontakte_id_fk": {
+          "name": "nachrichten_kontakt_id_kontakte_id_fk",
+          "tableFrom": "nachrichten",
+          "tableTo": "kontakte",
+          "columnsFrom": [
+            "kontakt_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sitzungen": {
+      "name": "sitzungen",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "benutzer_id": {
+          "name": "benutzer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "laeuft_ab_am": {
+          "name": "laeuft_ab_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ansicht_laden_id": {
+          "name": "ansicht_laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "sitzungen_benutzer_idx": {
+          "name": "sitzungen_benutzer_idx",
+          "columns": [
+            {
+              "expression": "benutzer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "sitzungen_benutzer_id_benutzer_id_fk": {
+          "name": "sitzungen_benutzer_id_benutzer_id_fk",
+          "tableFrom": "sitzungen",
+          "tableTo": "benutzer",
+          "columnsFrom": [
+            "benutzer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sitzungen_ansicht_laden_id_laeden_id_fk": {
+          "name": "sitzungen_ansicht_laden_id_laeden_id_fk",
+          "tableFrom": "sitzungen",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "ansicht_laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.termine": {
+      "name": "termine",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "laden_id": {
+          "name": "laden_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kontakt_id": {
+          "name": "kontakt_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "auftragsnummer": {
+          "name": "auftragsnummer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datum": {
+          "name": "datum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "titel": {
+          "name": "titel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notiz": {
+          "name": "notiz",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "erledigt": {
+          "name": "erledigt",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "erstellt_am": {
+          "name": "erstellt_am",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "termine_laden_idx": {
+          "name": "termine_laden_idx",
+          "columns": [
+            {
+              "expression": "laden_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "datum",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "termine_laden_id_laeden_id_fk": {
+          "name": "termine_laden_id_laeden_id_fk",
+          "tableFrom": "termine",
+          "tableTo": "laeden",
+          "columnsFrom": [
+            "laden_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "termine_kontakt_id_kontakte_id_fk": {
+          "name": "termine_kontakt_id_kontakte_id_fk",
+          "tableFrom": "termine",
+          "tableTo": "kontakte",
+          "columnsFrom": [
+            "kontakt_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.benutzer_rolle": {
+      "name": "benutzer_rolle",
+      "schema": "public",
+      "values": [
+        "admin",
+        "laden"
+      ]
+    },
+    "public.nachricht_status": {
+      "name": "nachricht_status",
+      "schema": "public",
+      "values": [
+        "neu",
+        "gelesen",
+        "beantwortet"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

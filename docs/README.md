@@ -1,7 +1,7 @@
 # Doku: dashboard-v3
 
 Hier steht, wie das Dashboard aufgebaut ist und warum es so gebaut ist.
-Stand: 03.11.2026 (nach PR #1 bis #14).
+Stand: 03.11.2026 (nach PR #1 bis #15).
 
 **Was ist das Projekt?** Ein Dashboard für kleine Läden (zum Beispiel eine Fahrradwerkstatt).
 Jeder Laden hat eine öffentliche Seite mit Kontaktformular. Die Nachrichten landen im Dashboard,
@@ -22,6 +22,7 @@ wo der Laden sie liest und abhakt. Dazu kommen Termine.
 | [09-git-ablauf.md](09-git-ablauf.md)                         | Branch, PR, testen, mergen: die Befehle für jeden Schritt             |
 | [10-admin-und-zugangscode.md](10-admin-und-zugangscode.md)   | Admin-Bereich, Zugang zum Kunden-Dashboard nur mit Code, Zahlen       |
 | [11-team.md](11-team.md)                                     | Team: Inhaber legt Mitarbeiter-Logins an und vergibt Rechte           |
+| [12-fotos-und-bildspeicher.md](12-fotos-und-bildspeicher.md) | Eigene Fotos hochladen (Ladenfront oben), Bildspeicher Vercel Blob    |
 
 Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 [Hosting, Domain & E-Mail: Plan für Läden](https://claude.ai/artifact/71iJniso3uZ2fjZDqB37JB).
@@ -44,3 +45,4 @@ Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 | #12 | Eigener Admin-Bereich `/admin` mit Zahlen, Kunden-Dashboard nur mit Zugangscode vom Inhaber, Aufrufe zählen         |
 | #13 | Aufrufe im Entwicklungsmodus nicht doppelt zählen                                                                   |
 | #14 | Team-Seite: Inhaber legt Mitarbeiter-Logins an und entscheidet, wer die Webseite bearbeiten darf                    |
+| #15 | Fotos: Ladenfront als Hintergrund oben, Upload im Bearbeitungsmodus, Bildspeicher Vercel Blob (Frankfurt)          |
