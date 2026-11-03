@@ -90,4 +90,10 @@ schickt der Browser nach dem Laden kurz `POST /laden/<slug>/aufruf`
 `app/laden/[slug]/aufruf/route.ts` zählt dann +1 für heute („upsert“: gibt es die Zeile schon,
 wird hochgezählt, sonst angelegt).
 
-Gut zu wissen: Auch Suchmaschinen-Bots und eigene Besuche zählen mit. Für einen Trend reicht das.
+**Eigene Besuche zählen mit**, auch wenn du oder der Inhaber angemeldet seid. Ihr könntet ja auch
+Kunden sein 😄
+
+**Doppelt gezählt im Entwicklungsmodus?** `vp run dev` führt React-Effekte zum Testen absichtlich
+zweimal aus. Darum zählt `AufrufZaehler` dieselbe Seite innerhalb von 2 Sekunden nur einmal.
+
+Gut zu wissen: Suchmaschinen-Bots zählen mit. Für einen Trend reicht das.
