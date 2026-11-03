@@ -3,6 +3,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "./db";
 import { kontakte, laeden, nachrichten } from "./db/schema";
 import type { Nachricht } from "./nachrichten";
+import { benutzerPflicht, type Benutzer } from "./sitzung";
 
 // Vorher lagen die Nachrichten in einer JSON-Datei, jetzt in Neon (Postgres).
 // Seiten und Actions rufen weiter dieselben drei Funktionen auf,
@@ -19,14 +20,25 @@ function zeitText(zeit: Date): string {
   );
 }
 
-// TODO nach dem Login: ladenId mitgeben, damit jeder Laden nur seine Nachrichten sieht
+// Admin sieht alle Läden, ein Ladenbesitzer nur die Zeilen mit seiner laden_id.
+// undefined in .where() heißt "kein Filter".
+function nurEigenerLaden(angemeldet: Benutzer) {
+  return angemeldet.rolle === "admin"
+    ? undefined
+    : eq(nachrichten.ladenId, angemeldet.ladenId ?? -1);
+}
+
 export async function alleNachrichten(): Promise<Nachricht[]> {
+  // Die Login-Prüfung sitzt hier direkt vor den Daten. So kann keine Seite sie vergessen.
+  const angemeldet = await benutzerPflicht();
+
   // Ein JOIN holt Nachricht, Kontakt und Laden in einer einzigen Abfrage
   const zeilen = await db
     .select({ nachricht: nachrichten, kontakt: kontakte, ladenSlug: laeden.slug })
     .from(nachrichten)
     .innerJoin(kontakte, eq(nachrichten.kontaktId, kontakte.id))
     .innerJoin(laeden, eq(nachrichten.ladenId, laeden.id))
+    .where(nurEigenerLaden(angemeldet))
     .orderBy(desc(nachrichten.eingegangenAm)); // neueste zuerst
 
   // Aus den Tabellen-Zeilen wieder das Nachricht-Objekt machen, das die Karte kennt.
@@ -106,6 +118,11 @@ export async function nachrichtStatusSetzen(
   id: number,
   status: Nachricht["status"],
 ): Promise<void> {
-  // Ein UPDATE statt "alles lesen, ändern, alles zurückschreiben" wie bei der JSON-Datei
-  await db.update(nachrichten).set({ status }).where(eq(nachrichten.id, id));
+  const angemeldet = await benutzerPflicht();
+  // Ein UPDATE statt "alles lesen, ändern, alles zurückschreiben" wie bei der JSON-Datei.
+  // Mit Laden-Filter: eine fremde Nachrichten-ID ändert einfach nichts.
+  await db
+    .update(nachrichten)
+    .set({ status })
+    .where(and(eq(nachrichten.id, id), nurEigenerLaden(angemeldet)));
 }

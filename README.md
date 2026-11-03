@@ -23,3 +23,23 @@ Die Tabellen sind in `app/lib/db/schema.ts` beschrieben.
 | `vp run db:studio`   | Öffnet eine Tabellen-Ansicht im Browser                                     |
 
 Tabellen: `laeden`, `kontakte` (Personendaten), `nachrichten`, `termine`. Jede Tabelle hat `laden_id`, damit später jeder Laden nur seine eigenen Daten sieht.
+
+## Login
+
+Alles außer `/laden/...` und `/login` braucht einen Login.
+
+| Datei                 | Was sie macht                                                       |
+| --------------------- | ------------------------------------------------------------------- |
+| `proxy.ts`            | Schnelle Vorab-Prüfung: kein Cookie, dann weiter zu `/login`        |
+| `app/lib/sitzung.ts`  | Echte Prüfung: Cookie gegen Tabelle `sitzungen`, wer ist angemeldet |
+| `app/lib/passwort.ts` | Passwörter langsam hashen und prüfen (scrypt, in Node eingebaut)    |
+| `app/login/`          | Login-Seite und die Actions `anmelden` / `abmelden`                 |
+
+Rollen: `admin` sieht alle Läden, `laden` nur den eigenen (`laden_id`).
+
+Login anlegen oder Passwort neu setzen (fragt E-Mail, Passwort und Laden ab):
+
+```bash
+vp run db:migrate          # einmal, legt die Tabellen benutzer und sitzungen an
+vp run benutzer:anlegen    # Laden leer lassen = admin
+```
