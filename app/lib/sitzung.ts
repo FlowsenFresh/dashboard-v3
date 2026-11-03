@@ -28,6 +28,12 @@ export function sichtbarerLaden(angemeldet: Benutzer): number | null {
   return angemeldet.ladenId ?? -1; // laden-Benutzer ohne Laden sieht nichts
 }
 
+// Darf diese Person die Webseite dieses Ladens bearbeiten?
+// admin darf alle, ein Ladenbesitzer nur seinen eigenen.
+export function darfLadenBearbeiten(angemeldet: Benutzer, ladenId: number): boolean {
+  return angemeldet.rolle === "admin" || angemeldet.ladenId === ladenId;
+}
+
 // In der Datenbank steht nur der Hash vom Token (siehe schema.ts).
 // SHA-256 reicht hier, weil das Token 32 zufällige Bytes hat: das kann niemand erraten.
 // Bei Passwörtern ist das anders, die sind kurz und von Menschen ausgedacht, darum dort scrypt.

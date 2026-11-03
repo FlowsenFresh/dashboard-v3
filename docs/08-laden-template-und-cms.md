@@ -110,6 +110,40 @@ Listen viel einfacher als hundert einzelne Felder.
 
 Der Speichern-Knopf klebt unten am Bildschirm (`sticky bottom-0`), damit man nicht scrollen muss.
 
+## Bearbeiten direkt auf der Seite (Doppelklick)
+
+Seit PR #11 geht es noch einfacher: Auf der Laden-Seite unten steht **„✎ Seite bearbeiten“**.
+Danach hat jeder Text einen gestrichelten Rahmen, und ein **Doppelklick** macht ein Eingabefeld
+daraus. Enter oder ein Klick daneben übernimmt, Escape bricht ab. Bei Listen gibt es „+“ und „✕“.
+Unten in der Leiste: Farbe wählen, **Verwerfen** oder **Speichern**.
+
+**Wer sieht den Knopf?** Nur du (admin) und der Inhaber dieses Ladens. Normale Besucher bekommen
+ihn gar nicht erst geschickt. Und noch wichtiger: Die Action `seiteSpeichern` prüft beim Speichern
+selbst auf dem Server nochmal (`darfLadenBearbeiten` in `sitzung.ts`). Ein versteckter Knopf allein
+wäre kein Schutz, weil jeder eine Action auch von Hand aufrufen kann.
+
+**Wie das gebaut ist** (`app/laden/[slug]/_bearbeiten/`):
+
+| Datei                  | Aufgabe                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| `Rahmen.tsx`           | Schaltet um: aus = normale Seite vom Server, an = dieselbe Seite mit den geänderten Daten     |
+| `Kontext.tsx`          | Die „unsichtbare Leitung“ (React Context), über die jeder Text den Modus und die Daten findet |
+| `Bearbeitbar.tsx`      | Ein Text, der per Doppelklick zum Eingabefeld wird                                            |
+| `ListenKnoepfe.tsx`    | „+“ und „✕“ für Listen                                                                        |
+| `Leiste.tsx`           | Die Leiste unten mit Farbe, Verwerfen, Speichern                                              |
+| `BearbeitenLeiste.tsx` | Läuft auf dem Server, liest das Login-Cookie, zeigt die Leiste nur Berechtigten               |
+
+Jeder Text weiß über seinen **Pfad**, wohin er gehört, z. B. `slogan` oder `leistungen.2.titel`.
+`setzePfad` in `Kontext.tsx` ändert genau diese Stelle und macht dabei eine Kopie, damit React die
+Änderung bemerkt.
+
+**Warum bleibt die Seite trotzdem schnell?** Die Seite selbst kommt weiter aus dem Cache. Nur die
+kleine Leiste steht in `<Suspense>` und wird pro Besuch geprüft, weil sie das Cookie lesen muss.
+
+Gespeichert wird über denselben Weg wie im Dashboard (`app/lib/ladenSpeichern.ts`): Zod prüfen,
+in die Datenbank schreiben, `updateTag`. Das Formular unter **Webseite** im Dashboard gibt es
+weiterhin, falls man lieber alles auf einmal sieht.
+
 ## Neuen Laden anlegen (bis es den admin-Bereich gibt)
 
 1. Zeile in `laeden` mit `slug` und `name` anlegen (z. B. in `vp run db:studio`).

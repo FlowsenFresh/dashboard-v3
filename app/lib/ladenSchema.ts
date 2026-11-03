@@ -31,7 +31,7 @@ export const ladenInhaltSchema = z.object({
     // Leere Zeilen (ohne Titel) einfach weglassen
     .transform((liste) => liste.filter((l) => l.titel)),
   ueberUns: z
-    .object({ text: text(800), fakten: z.array(text(40)).max(6) })
+    .object({ text: text(800), fakten: z.array(text(40)).max(6).default([]) })
     .nullable()
     .transform((wert) => {
       if (!wert || !wert.text) return null; // ohne Text kein Abschnitt

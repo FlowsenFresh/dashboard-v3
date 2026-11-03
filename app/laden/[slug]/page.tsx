@@ -1,21 +1,15 @@
-import type { CSSProperties } from "react";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { alleLaeden, ladenFinden } from "@/app/lib/laeden";
-import Kopf from "./_teile/Kopf";
-import Held from "./_teile/Held";
-import Leistungen from "./_teile/Leistungen";
-import UeberUns from "./_teile/UeberUns";
-import Oeffnungszeiten from "./_teile/Oeffnungszeiten";
-import Anfahrt from "./_teile/Anfahrt";
-import Kontakt from "./_teile/Kontakt";
-import Fuss from "./_teile/Fuss";
+import Seite from "./_teile/Seite";
+import Rahmen from "./_bearbeiten/Rahmen";
+import BearbeitenLeiste from "./_bearbeiten/BearbeitenLeiste";
 
 // Das ist das Template: eine Seite für alle Läden.
-// Jeder Abschnitt ist eine eigene Datei in _teile/ (der Unterstrich sagt Next.js:
-// das ist keine eigene Seite, nur Bausteine). Reihenfolge ändern = Zeilen unten tauschen.
-// Die Inhalte kommen aus der Datenbank und werden im Dashboard unter /webseite bearbeitet.
+// Die Abschnitte stehen in _teile/ (der Unterstrich sagt Next.js: keine eigene Seite, nur Bausteine),
+// zusammengesetzt in _teile/Seite.tsx. Der Bearbeitungsmodus (Doppelklick) steckt in _bearbeiten/.
+// Die Inhalte kommen aus der Datenbank.
 
 // Sagt Next.js beim Build, welche Laden-Seiten es schon gibt. Läden, die später
 // dazukommen, baut Next.js beim ersten Besuch und merkt sie sich dann.
@@ -45,37 +39,21 @@ export default function LadenSeite({ params }: PageProps<"/laden/[slug]">) {
   );
 }
 
-// Überschreibt unsere Akzentfarbe nur für diese Seite. Alle Klassen wie
-// text-akzent oder bg-akzent/10 lesen die CSS-Variable und ziehen automatisch mit.
-// Die Farbe beim Drüberfahren mischt der Browser selbst: 25 % Weiß dazu.
-function farbVariablen(farbe: string | null): CSSProperties | undefined {
-  if (!farbe) return undefined;
-  return {
-    "--color-akzent": farbe,
-    "--color-akzent-hell": `color-mix(in oklab, ${farbe}, white 25%)`,
-  } as CSSProperties;
-}
-
 async function LadenInhalt({ params }: { params: PageProps<"/laden/[slug]">["params"] }) {
   const { slug } = await params;
   const laden = await ladenFinden(slug);
   if (!laden) notFound();
 
-  // Die Abschnitte wechseln sich im Hintergrund ab (siehe _teile/Abschnitt.tsx).
-  // Wenig auf einmal: jedes Thema bekommt seinen eigenen Streifen.
   return (
-    // text-lg: auf der Laden-Seite ist alles etwas größer, angenehm auch für ältere Kunden
-    <div style={farbVariablen(laden.farbe)} className="flex flex-1 flex-col text-lg">
-      <Kopf laden={laden} />
-      <main className="flex-1">
-        <Held laden={laden} />
-        <Leistungen leistungen={laden.leistungen} ton="dunkel" />
-        {laden.ueberUns && <UeberUns ueberUns={laden.ueberUns} ton="hell" />}
-        <Oeffnungszeiten laden={laden} ton="mittel" />
-        <Anfahrt laden={laden} ton="dunkel" />
-        <Kontakt laden={laden} ton="hell" />
-      </main>
-      <Fuss laden={laden} />
-    </div>
+    <Rahmen
+      laden={laden}
+      seite={<Seite laden={laden} />}
+      leiste={
+        // Nur dieser kleine Teil liest das Login-Cookie, die Seite bleibt im Cache
+        <Suspense>
+          <BearbeitenLeiste slug={laden.slug} ladenId={laden.id} />
+        </Suspense>
+      }
+    />
   );
 }

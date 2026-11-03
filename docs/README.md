@@ -1,7 +1,7 @@
 # Doku: dashboard-v3
 
 Hier steht, wie das Dashboard aufgebaut ist und warum es so gebaut ist.
-Stand: 03.11.2026 (nach PR #1 bis #10).
+Stand: 03.11.2026 (nach PR #1 bis #11).
 
 **Was ist das Projekt?** Ein Dashboard für kleine Läden (zum Beispiel eine Fahrradwerkstatt).
 Jeder Laden hat eine öffentliche Seite mit Kontaktformular. Die Nachrichten landen im Dashboard,
@@ -38,3 +38,4 @@ Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 | #8  | Diese Doku                                                                                                          |
 | #9  | Laden-Seite als Template: Abschnitte, Farbe pro Laden, 6 Test-Läden                                                 |
 | #10 | CMS: Laden-Inhalte in der Datenbank, im Dashboard unter „Webseite“ bearbeiten. Neues schlichtes Design mit Streifen |
+| #11 | Laden-Seite direkt bearbeiten: „Seite bearbeiten“-Knopf, Texte per Doppelklick ändern (nur admin und Ladeninhaber)  |
