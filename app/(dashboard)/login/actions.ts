@@ -25,7 +25,7 @@ export async function anmelden(_vorher: LoginStatus, formData: FormData): Promis
   const ergebnis = loginSchema.safeParse({
     email: formData.get("email"),
     passwort: formData.get("passwort"),
-    weiter: formData.get("weiter") ?? "/",
+    weiter: formData.get("weiter") ?? "/dashboard",
   });
   const email = String(formData.get("email") ?? "");
   if (!ergebnis.success) return { fehler: "Bitte E-Mail und Passwort eingeben.", email };
@@ -42,9 +42,9 @@ export async function anmelden(_vorher: LoginStatus, formData: FormData): Promis
   // Nur Pfade in unserer eigenen App erlauben ("/nachrichten"), keine fremden Seiten
   // ("//boese.de" oder "https://..."). Sonst könnte jemand einen Login-Link bauen,
   // der nach dem Anmelden auf eine falsche Seite weiterleitet.
-  let ziel = daten.weiter.startsWith("/") && !daten.weiter.startsWith("//") ? daten.weiter : "/";
+  let ziel = daten.weiter.startsWith("/") && !daten.weiter.startsWith("//") ? daten.weiter : "/dashboard";
   // admin startet in seinem eigenen Bereich, nicht im Kunden-Dashboard
-  if (ziel === "/" && gefunden.rolle === "admin") ziel = "/admin";
+  if (ziel === "/dashboard" && gefunden.rolle === "admin") ziel = "/admin";
   redirect(ziel);
 }
 

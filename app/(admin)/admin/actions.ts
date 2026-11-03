@@ -30,7 +30,7 @@ export async function ladenOeffnen(
   }
 
   await ansichtSetzen(angemeldet, laden.id);
-  redirect("/");
+  redirect("/dashboard");
 }
 
 // Aus dem Kunden-Dashboard zurück in den Admin-Bereich.

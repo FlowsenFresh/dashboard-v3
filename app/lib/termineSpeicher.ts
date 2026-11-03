@@ -24,6 +24,7 @@ export async function alleTermine(): Promise<Termin[]> {
     auftragsnummer: termin.auftragsnummer,
     // Postgres liefert "2026-10-17", angezeigt wird "17.10.2026"
     datum: termin.datum.split("-").reverse().join("."),
+    tag: termin.datum,
     titel: termin.titel,
     vorname: kontakt.vorname,
     nachname: kontakt.nachname,

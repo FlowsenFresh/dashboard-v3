@@ -4,6 +4,7 @@ import { db } from "./db";
 import { kontakte, laeden, nachrichten } from "./db/schema";
 import type { Nachricht } from "./nachrichten";
 import { benutzerPflicht, sichtbarerLaden, type Benutzer } from "./sitzung";
+import { tagInBerlin } from "./zeit";
 
 // Vorher lagen die Nachrichten in einer JSON-Datei, jetzt in Neon (Postgres).
 // Seiten und Actions rufen weiter dieselben drei Funktionen auf,
@@ -52,6 +53,7 @@ export async function alleNachrichten(): Promise<Nachricht[]> {
     telefon: kontakt.telefon ?? undefined,
     inhalt: nachricht.inhalt ?? undefined,
     eingegangen: zeitText(nachricht.eingegangenAm),
+    eingegangenTag: tagInBerlin(nachricht.eingegangenAm),
     wunschDatum: nachricht.wunschDatum ?? undefined,
     wunschZeit: nachricht.wunschZeit?.slice(0, 5), // "15:00:00" -> "15:00"
     status: nachricht.status,

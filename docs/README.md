@@ -23,6 +23,7 @@ wo der Laden sie liest und abhakt. Dazu kommen Termine.
 | [10-admin-und-zugangscode.md](10-admin-und-zugangscode.md)   | Admin-Bereich, Zugang zum Kunden-Dashboard nur mit Code, Zahlen       |
 | [11-team.md](11-team.md)                                     | Team: Inhaber legt Mitarbeiter-Logins an und vergibt Rechte           |
 | [12-fotos-und-bildspeicher.md](12-fotos-und-bildspeicher.md) | Eigene Fotos hochladen (Ladenfront oben), Bildspeicher Vercel Blob    |
+| [13-startseite-und-kalender.md](13-startseite-und-kalender.md) | Öffentliche Startseite, neue Pfade, Kalender als Zentrale im Dashboard |
 
 Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 [Hosting, Domain & E-Mail: Plan für Läden](https://claude.ai/artifact/71iJniso3uZ2fjZDqB37JB).
