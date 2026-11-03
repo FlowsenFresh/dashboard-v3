@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { ladenFinden } from "@/app/lib/laeden";
 import { nachrichtSpeichern } from "@/app/lib/nachrichtenSpeicher";
 import { kontaktSchema } from "@/app/lib/nachrichtSchema";
+import { ladenInhaltSpeichern, type SpeichernStatus } from "@/app/lib/ladenSpeichern";
+import { aktuellerBenutzer, darfLadenBearbeiten } from "@/app/lib/sitzung";
 
 export type FormularStatus = {
   ok: boolean;
@@ -51,4 +53,19 @@ export async function nachrichtSenden(
   revalidatePath("/nachrichten");
 
   return { ok: true, meldung: "Danke! Deine Nachricht ist angekommen." };
+}
+
+// Bearbeitungsmodus direkt auf der Laden-Seite: speichert alles, was per Doppelklick geändert wurde.
+export async function seiteSpeichern(slug: string, daten: string): Promise<SpeichernStatus> {
+  // Die Prüfung passiert hier auf dem Server. Dass der Knopf nur für Berechtigte
+  // sichtbar ist, reicht nicht: jeder könnte diese Action auch von Hand aufrufen.
+  const angemeldet = await aktuellerBenutzer();
+  if (!angemeldet) return { ok: false, meldung: "Bitte melde dich erst an." };
+
+  const laden = await ladenFinden(slug);
+  if (!laden || !darfLadenBearbeiten(angemeldet, laden.id)) {
+    return { ok: false, meldung: "Diese Seite darfst du nicht bearbeiten." };
+  }
+
+  return ladenInhaltSpeichern(laden.id, daten);
 }

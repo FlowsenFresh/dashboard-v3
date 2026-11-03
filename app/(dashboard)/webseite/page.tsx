@@ -10,7 +10,8 @@ export default function Webseite() {
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
       <h1 className="seitentitel">Webseite bearbeiten</h1>
       <p className="mb-8 mt-2 text-gedaempft">
-        Was du hier speicherst, steht sofort auf der Laden-Seite.
+        Was du hier speicherst, steht sofort auf der Laden-Seite. Tipp: Auf der Laden-Seite selbst
+        gibt es unten den Knopf „Seite bearbeiten“. Dann änderst du jeden Text per Doppelklick.
       </p>
       <Suspense fallback={<p className="text-gedaempft">Lade Inhalte …</p>}>
         <Bearbeiten />

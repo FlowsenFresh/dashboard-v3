@@ -1,4 +1,5 @@
 import type { Laden } from "@/app/lib/laeden";
+import Bearbeitbar from "../_bearbeiten/Bearbeitbar";
 
 // Leiste oben. "sticky" = bleibt beim Scrollen stehen.
 // Die Links springen zu den Abschnitten (#leistungen usw. sind deren id).
@@ -8,7 +9,7 @@ export default function Kopf({ laden }: { laden: Laden }) {
       <nav className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-4">
         <a href="#start" className="flex items-center gap-3 text-xl font-semibold tracking-tight">
           <span className="size-3 rounded-full bg-akzent" />
-          {laden.name}
+          <Bearbeitbar pfad="name" wert={laden.name} />
         </a>
         <div className="flex items-center gap-8 text-gedaempft">
           {/* Auf dem Handy nur der Knopf, sonst wird es zu eng */}
