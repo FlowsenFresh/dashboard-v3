@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ladenFinden } from "../../lib/laeden";
-import { nachrichtSpeichern } from "../../lib/nachrichtenSpeicher";
-import { kontaktSchema } from "../../lib/nachrichtSchema";
+import { ladenFinden } from "@/app/lib/laeden";
+import { nachrichtSpeichern } from "@/app/lib/nachrichtenSpeicher";
+import { kontaktSchema } from "@/app/lib/nachrichtSchema";
 
 export type FormularStatus = {
   ok: boolean;

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { nachrichtStatusSetzen } from "../lib/nachrichtenSpeicher";
-import { statusSchema } from "../lib/nachrichtSchema";
+import { nachrichtStatusSetzen } from "@/app/lib/nachrichtenSpeicher";
+import { statusSchema } from "@/app/lib/nachrichtSchema";
 
 // Speichert den neuen Status auf dem Server, damit er nach dem Neuladen noch da ist
 export async function statusAendern(

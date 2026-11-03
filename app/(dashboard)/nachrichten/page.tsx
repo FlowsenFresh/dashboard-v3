@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { alleNachrichten } from "../lib/nachrichtenSpeicher";
-import NachrichtenKarte from "../components/NachrichtenKarte";
+import { alleNachrichten } from "@/app/lib/nachrichtenSpeicher";
+import NachrichtenKarte from "@/app/components/NachrichtenKarte";
 
 export default function Nachrichten() {
   return (

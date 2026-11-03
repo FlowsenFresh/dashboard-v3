@@ -3,9 +3,9 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { db } from "../lib/db";
-import { laeden } from "../lib/db/schema";
-import { ansichtSetzen, benutzerPflicht } from "../lib/sitzung";
+import { db } from "@/app/lib/db";
+import { laeden } from "@/app/lib/db/schema";
+import { ansichtSetzen, benutzerPflicht } from "@/app/lib/sitzung";
 
 // admin wählt oben in der Kopfzeile, welchen Laden er sieht. "" = alle Läden.
 export async function ladenWechseln(formData: FormData): Promise<void> {

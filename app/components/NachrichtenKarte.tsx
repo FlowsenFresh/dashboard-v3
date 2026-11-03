@@ -1,5 +1,5 @@
 import type { Nachricht } from "../lib/nachrichten";
-import { statusAendern } from "../nachrichten/actions";
+import { statusAendern } from "@/app/(dashboard)/nachrichten/actions";
 import StatusMarke from "./StatusMarke";
 
 const statusFarbe = {

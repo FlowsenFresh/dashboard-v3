@@ -54,6 +54,11 @@
   @apply rounded-lg bg-akzent px-4 py-2 font-medium text-hintergrund transition hover:bg-akzent-hell disabled:opacity-50;
 }
 
+/* Wie knopf, aber nur mit Rand: für den zweitwichtigsten Knopf */
+@utility knopf-rand {
+  @apply rounded-lg border border-rand px-4 py-2 font-medium transition hover:border-akzent hover:text-akzent;
+}
+
 @utility knopf-leise {
   @apply rounded-lg border border-rand px-3 py-1.5 text-sm text-gedaempft transition hover:border-rand-hover hover:text-schrift;
 }
@@ -64,4 +69,9 @@
 
 @utility seitentitel {
   @apply text-3xl font-semibold tracking-tight;
+}
+
+/* Gleiche Breite und Seitenabstand für alle Abschnitte der Laden-Seite */
+@utility rahmen {
+  @apply mx-auto w-full max-w-5xl px-4;
 }
