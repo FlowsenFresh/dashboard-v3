@@ -3,14 +3,14 @@ import { asc, eq } from "drizzle-orm";
 import { db } from "./db";
 import { kontakte, termine } from "./db/schema";
 import type { Termin } from "./termine";
-import { benutzerPflicht } from "./sitzung";
+import { benutzerPflicht, sichtbarerLaden } from "./sitzung";
 
 // Termine kommen jetzt auch aus Neon. Anlegen und Bearbeiten im Dashboard kommt später.
 export async function alleTermine(): Promise<Termin[]> {
-  // Wie bei den Nachrichten: Login prüfen, Ladenbesitzer sehen nur ihren Laden
+  // Wie bei den Nachrichten: Login prüfen, dann nur Termine des sichtbaren Ladens
   const angemeldet = await benutzerPflicht();
-  const filter =
-    angemeldet.rolle === "admin" ? undefined : eq(termine.ladenId, angemeldet.ladenId ?? -1);
+  const ladenId = sichtbarerLaden(angemeldet);
+  const filter = ladenId === null ? undefined : eq(termine.ladenId, ladenId);
 
   const zeilen = await db
     .select({ termin: termine, kontakt: kontakte })

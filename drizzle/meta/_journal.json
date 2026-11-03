@@ -15,6 +15,13 @@
       "when": 1793664341744,
       "tag": "0001_login",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793665180046,
+      "tag": "0002_laden_ansicht",
+      "breakpoints": true
     }
   ]
 }

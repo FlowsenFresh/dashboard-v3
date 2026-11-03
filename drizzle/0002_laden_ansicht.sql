@@ -1,0 +1,2 @@
+ALTER TABLE "sitzungen" ADD COLUMN "ansicht_laden_id" integer;--> statement-breakpoint
+ALTER TABLE "sitzungen" ADD CONSTRAINT "sitzungen_ansicht_laden_id_laeden_id_fk" FOREIGN KEY ("ansicht_laden_id") REFERENCES "public"."laeden"("id") ON DELETE set null ON UPDATE no action;

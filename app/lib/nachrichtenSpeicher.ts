@@ -3,7 +3,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "./db";
 import { kontakte, laeden, nachrichten } from "./db/schema";
 import type { Nachricht } from "./nachrichten";
-import { benutzerPflicht, type Benutzer } from "./sitzung";
+import { benutzerPflicht, sichtbarerLaden, type Benutzer } from "./sitzung";
 
 // Vorher lagen die Nachrichten in einer JSON-Datei, jetzt in Neon (Postgres).
 // Seiten und Actions rufen weiter dieselben drei Funktionen auf,
@@ -20,12 +20,11 @@ function zeitText(zeit: Date): string {
   );
 }
 
-// Admin sieht alle Läden, ein Ladenbesitzer nur die Zeilen mit seiner laden_id.
-// undefined in .where() heißt "kein Filter".
+// Nur Nachrichten des sichtbaren Ladens (siehe sichtbarerLaden in sitzung.ts).
+// undefined in .where() heißt "kein Filter", also alle Läden.
 function nurEigenerLaden(angemeldet: Benutzer) {
-  return angemeldet.rolle === "admin"
-    ? undefined
-    : eq(nachrichten.ladenId, angemeldet.ladenId ?? -1);
+  const ladenId = sichtbarerLaden(angemeldet);
+  return ladenId === null ? undefined : eq(nachrichten.ladenId, ladenId);
 }
 
 export async function alleNachrichten(): Promise<Nachricht[]> {
