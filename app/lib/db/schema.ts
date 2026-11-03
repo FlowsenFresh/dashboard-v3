@@ -112,6 +112,11 @@ export const sitzungen = pgTable(
       .notNull()
       .references(() => benutzer.id, { onDelete: "cascade" }),
     laeuftAbAm: timestamp("laeuft_ab_am", { withTimezone: true }).notNull(),
+    // Nur für admin: in welchen Laden er gerade schaut. Leer = alle Läden.
+    // Hängt an der Sitzung, nicht am Benutzer: zwei offene Browser können verschiedene Läden zeigen.
+    ansichtLadenId: integer("ansicht_laden_id").references(() => laeden.id, {
+      onDelete: "set null",
+    }),
     erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("sitzungen_benutzer_idx").on(t.benutzerId)],

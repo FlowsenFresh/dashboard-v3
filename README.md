@@ -35,7 +35,7 @@ Alles außer `/laden/...` und `/login` braucht einen Login.
 | `app/lib/passwort.ts` | Passwörter langsam hashen und prüfen (scrypt, in Node eingebaut)    |
 | `app/login/`          | Login-Seite und die Actions `anmelden` / `abmelden`                 |
 
-Rollen: `admin` sieht alle Läden, `laden` nur den eigenen (`laden_id`).
+Rollen: `admin` sieht alle Läden und kann oben in der Kopfzeile in einen Laden wechseln, `laden` sieht nur den eigenen (`laden_id`).
 
 Login anlegen oder Passwort neu setzen (fragt E-Mail, Passwort und Laden ab):
 

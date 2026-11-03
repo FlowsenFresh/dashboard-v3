@@ -15,8 +15,18 @@ export type Benutzer = {
   id: number;
   email: string;
   rolle: "admin" | "laden";
-  ladenId: number | null;
+  ladenId: number | null; // eigener Laden (nur bei rolle "laden")
+  ansichtLadenId: number | null; // admin: gerade gewählter Laden, null = alle
+  sitzungId: string; // Hash des Tokens, damit ladenWechseln die richtige Zeile ändert
 };
+
+// Welche Daten darf diese Person gerade sehen? Zahl = nur dieser Laden, null = alle Läden.
+// Alle Speicher-Funktionen filtern damit. Ein Ladenbesitzer bekommt immer seinen Laden,
+// egal was sonst in der Sitzung steht. Nur ein admin kann wechseln.
+export function sichtbarerLaden(angemeldet: Benutzer): number | null {
+  if (angemeldet.rolle === "admin") return angemeldet.ansichtLadenId;
+  return angemeldet.ladenId ?? -1; // laden-Benutzer ohne Laden sieht nichts
+}
 
 // In der Datenbank steht nur der Hash vom Token (siehe schema.ts).
 // SHA-256 reicht hier, weil das Token 32 zufällige Bytes hat: das kann niemand erraten.
@@ -56,6 +66,8 @@ export async function aktuellerBenutzer(): Promise<Benutzer | null> {
       email: benutzer.email,
       rolle: benutzer.rolle,
       ladenId: benutzer.ladenId,
+      ansichtLadenId: sitzungen.ansichtLadenId,
+      sitzungId: sitzungen.id,
     })
     .from(sitzungen)
     .innerJoin(benutzer, eq(sitzungen.benutzerId, benutzer.id))
@@ -79,4 +91,13 @@ export async function sitzungBeenden(): Promise<void> {
   const token = speicher.get(SITZUNG_COOKIE)?.value;
   if (token) await db.delete(sitzungen).where(eq(sitzungen.id, tokenHash(token)));
   speicher.delete(SITZUNG_COOKIE);
+}
+
+// admin schaut in einen bestimmten Laden (oder mit null wieder in alle)
+export async function ansichtSetzen(angemeldet: Benutzer, ladenId: number | null): Promise<void> {
+  if (angemeldet.rolle !== "admin") return;
+  await db
+    .update(sitzungen)
+    .set({ ansichtLadenId: ladenId })
+    .where(eq(sitzungen.id, angemeldet.sitzungId));
 }
