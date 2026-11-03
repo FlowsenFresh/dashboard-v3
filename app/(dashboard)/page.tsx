@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { beispielLaeden } from "@/app/lib/laeden";
+import { Suspense } from "react";
+import { alleLaeden } from "@/app/lib/laeden";
+import { benutzerPflicht } from "@/app/lib/sitzung";
 
 export default function Home() {
   return (
@@ -7,7 +9,7 @@ export default function Home() {
       <h1 className="seitentitel">Willkommen zurück</h1>
       <p className="mt-2 text-gedaempft">Hier hast du deine Termine und Nachrichten im Blick.</p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <Link href="/termine" className="karte-link">
           <h2 className="font-semibold">Termine</h2>
           <p className="mt-1 text-sm text-gedaempft">Aufträge und was ansteht</p>
@@ -16,12 +18,31 @@ export default function Home() {
           <h2 className="font-semibold">Nachrichten</h2>
           <p className="mt-1 text-sm text-gedaempft">Anfragen von der Laden-Seite</p>
         </Link>
+        <Link href="/webseite" className="karte-link">
+          <h2 className="font-semibold">Webseite</h2>
+          <p className="mt-1 text-sm text-gedaempft">Texte, Zeiten und Telefon ändern</p>
+        </Link>
       </div>
 
-      {/* Zum Testen des Templates: alle Laden-Seiten auf einen Blick */}
-      <h2 className="mt-12 text-xl font-semibold">Laden-Seiten</h2>
+      {/* Liest das Cookie, darum in Suspense */}
+      <Suspense>
+        <AlleLadenSeiten />
+      </Suspense>
+    </main>
+  );
+}
+
+// Nur für admin: alle Laden-Seiten auf einen Blick
+async function AlleLadenSeiten() {
+  const angemeldet = await benutzerPflicht();
+  if (angemeldet.rolle !== "admin") return null;
+  const laeden = await alleLaeden();
+
+  return (
+    <>
+      <h2 className="mt-12 text-xl font-semibold">Alle Laden-Seiten</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {beispielLaeden.map((laden) => (
+        {laeden.map((laden) => (
           <Link
             key={laden.slug}
             href={`/laden/${laden.slug}`}
@@ -29,7 +50,7 @@ export default function Home() {
           >
             <span
               className="size-3 shrink-0 rounded-full"
-              style={{ backgroundColor: laden.farben?.akzent ?? "var(--color-akzent)" }}
+              style={{ backgroundColor: laden.farbe ?? "var(--color-akzent)" }}
             />
             <div>
               <p className="font-medium">{laden.name}</p>
@@ -38,6 +59,6 @@ export default function Home() {
           </Link>
         ))}
       </div>
-    </main>
+    </>
   );
 }

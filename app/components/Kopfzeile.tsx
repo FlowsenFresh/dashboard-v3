@@ -10,7 +10,7 @@ import LadenWechsler from "./LadenWechsler";
 const links = [
   { href: "/termine", text: "Termine" },
   { href: "/nachrichten", text: "Nachrichten" },
-  { href: "/laden/radl-huber", text: "Laden-Seite" },
+  { href: "/webseite", text: "Webseite" },
 ];
 
 export default function Kopfzeile() {

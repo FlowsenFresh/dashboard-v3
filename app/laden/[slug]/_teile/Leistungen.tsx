@@ -1,23 +1,25 @@
 import type { Leistung } from "@/app/lib/laeden";
-import Ueberschrift from "./Ueberschrift";
+import Abschnitt, { type Ton } from "./Abschnitt";
 
-export default function Leistungen({ leistungen }: { leistungen: Leistung[] }) {
+// Schlicht: eine Leistung pro Zeile, mit Linie dazwischen. Keine Kästen.
+export default function Leistungen({ leistungen, ton }: { leistungen: Leistung[]; ton: Ton }) {
   if (leistungen.length === 0) return null;
 
   return (
-    <section id="leistungen" className="rahmen scroll-mt-20 py-16">
-      <Ueberschrift klein="Was wir machen" titel="Leistungen" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Abschnitt id="leistungen" ton={ton} klein="Was wir machen" titel="Leistungen">
+      <ul className="divide-y divide-rand border-y border-rand">
         {leistungen.map((leistung) => (
-          <div key={leistung.titel} className="karte flex flex-col">
-            <h3 className="font-semibold">{leistung.titel}</h3>
-            <p className="mt-1 flex-1 text-sm text-gedaempft">{leistung.text}</p>
+          <li key={leistung.titel} className="flex flex-col gap-1 py-6 sm:flex-row sm:gap-8">
+            <div className="flex-1">
+              <h3 className="text-2xl font-semibold">{leistung.titel}</h3>
+              {leistung.text && <p className="mt-2 text-gedaempft">{leistung.text}</p>}
+            </div>
             {leistung.preis && (
-              <p className="mt-4 text-sm font-medium text-akzent">{leistung.preis}</p>
+              <p className="shrink-0 text-xl font-medium text-akzent sm:pt-1">{leistung.preis}</p>
             )}
-          </div>
+          </li>
         ))}
-      </div>
-    </section>
+      </ul>
+    </Abschnitt>
   );
 }

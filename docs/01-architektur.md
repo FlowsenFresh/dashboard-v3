@@ -2,15 +2,15 @@
 
 ## Die Technik
 
-| Baustein | Wofür | Wo im Code |
-| -------- | ----- | ---------- |
-| **Next.js 16** (App Router) | Seiten, Server Actions, Login-Vorprüfung | `app/`, `proxy.ts` |
-| **React 19** | Die Oberfläche | `app/components/` |
-| **Tailwind CSS 4** | Aussehen, mit eigenen Farben (Design-Tokens) | `app/globals.css` |
-| **Zod** | Prüft Formulardaten auf dem Server | `app/lib/nachrichtSchema.ts` |
-| **Drizzle ORM** | Tabellen in TypeScript beschreiben und abfragen | `app/lib/db/` |
-| **Neon** | Postgres-Datenbank in Frankfurt (`aws-eu-central-1`) | Adresse in `.env.local` |
-| **vp** (vite-plus) | Befehle starten, z. B. `vp run dev` | `package.json` |
+| Baustein                    | Wofür                                                | Wo im Code                   |
+| --------------------------- | ---------------------------------------------------- | ---------------------------- |
+| **Next.js 16** (App Router) | Seiten, Server Actions, Login-Vorprüfung             | `app/`, `proxy.ts`           |
+| **React 19**                | Die Oberfläche                                       | `app/components/`            |
+| **Tailwind CSS 4**          | Aussehen, mit eigenen Farben (Design-Tokens)         | `app/globals.css`            |
+| **Zod**                     | Prüft Formulardaten auf dem Server                   | `app/lib/nachrichtSchema.ts` |
+| **Drizzle ORM**             | Tabellen in TypeScript beschreiben und abfragen      | `app/lib/db/`                |
+| **Neon**                    | Postgres-Datenbank in Frankfurt (`aws-eu-central-1`) | Adresse in `.env.local`      |
+| **vp** (vite-plus)          | Befehle starten, z. B. `vp run dev`                  | `package.json`               |
 
 Wichtig: Next.js 16 ist neuer als vieles, was man im Internet findet. Zum Beispiel heißt die
 Datei für die Vorprüfung jetzt `proxy.ts` (früher `middleware.ts`). Siehe `AGENTS.md`.
@@ -23,6 +23,7 @@ Datei für die Vorprüfung jetzt `proxy.ts` (früher `middleware.ts`). Siehe `AG
 /               Login nötig  Startseite mit Links zu Termine und Nachrichten
 /nachrichten    Login nötig  Anfragen von der Laden-Seite, Status neu/gelesen/beantwortet
 /termine        Login nötig  Aufträge und was ansteht
+/webseite       Login nötig  Inhalte der Laden-Seite bearbeiten (CMS)
 ```
 
 Alles außer `/laden/...` und `/login` braucht einen Login (siehe [03-login.md](03-login.md)).
@@ -31,21 +32,28 @@ Alles außer `/laden/...` und `/login` braucht einen Login (siehe [03-login.md](
 
 ```
 app/
-  laden/[slug]/   page.tsx (Laden-Seite), actions.ts (Formular absenden)
-  nachrichten/    page.tsx, actions.ts (Status ändern)
-  termine/        page.tsx
-  login/          page.tsx, actions.ts (anmelden, abmelden)
-  admin/          actions.ts (Laden wechseln)
-  components/     Karten, Formulare, Kopfzeile, LadenWechsler
+  layout.tsx      Rahmen für alle Seiten (html, Schrift)
+  laden/[slug]/   page.tsx (das Template), actions.ts (Formular absenden)
+    _teile/       Abschnitte der Laden-Seite: Kopf, Held, Leistungen, Über uns, ...
+  (dashboard)/    Route Group: alles mit Kopfzeile. Die Klammern stehen NICHT in der URL.
+    layout.tsx    Hängt die Kopfzeile an alle Dashboard-Seiten
+    page.tsx      Startseite
+    nachrichten/  page.tsx, actions.ts (Status ändern)
+    termine/      page.tsx
+    webseite/     page.tsx, actions.ts (CMS: Laden-Seite bearbeiten)
+    login/        page.tsx, actions.ts (anmelden, abmelden)
+    admin/        actions.ts (Laden wechseln)
+  components/     Karten, Formulare, Kopfzeile, LadenWechsler, WebseiteFormular
   lib/
     db/           schema.ts (Tabellen), index.ts (Verbindung zu Neon)
     sitzung.ts    Wer ist angemeldet? Welcher Laden ist sichtbar?
     passwort.ts   Passwörter hashen und prüfen
     nachrichtenSpeicher.ts, termineSpeicher.ts   Lesen und Schreiben in Neon
     nachrichtSchema.ts   Zod-Regeln fürs Formular
-    laeden.ts     Inhalte der Laden-Seite (noch fest im Code)
-drizzle/          SQL-Dateien (Migrationen) 0000_start, 0001_login, 0002_laden_ansicht
-scripts/          seed.ts (Beispieldaten), benutzer-anlegen.ts (Login anlegen)
+    laeden.ts     Laden-Inhalte aus der Datenbank lesen (mit Cache)
+    ladenSchema.ts   Zod-Regeln fürs CMS-Formular
+drizzle/          SQL-Dateien (Migrationen) 0000_start ... 0003_laden_inhalt
+scripts/          seed.ts + beispielLaeden.ts (Beispieldaten), benutzer-anlegen.ts (Login anlegen)
 proxy.ts          Läuft vor jeder Seite: ohne Cookie zu /login
 ```
 
@@ -69,26 +77,26 @@ und weitere. Statt zehn Klassen schreibt man `className="knopf"`.
 "Multi-Tenant" heißt: viele Läden (Mandanten) teilen sich eine App und eine Datenbank,
 aber jeder sieht nur seine eigenen Daten. Darum hat fast jede Tabelle eine Spalte `laden_id`.
 
-| Tabelle | Inhalt |
-| ------- | ------ |
-| `laeden` | Ein Eintrag pro Laden: `slug`, `name`, `termine_aufbewahren_monate` |
-| `kontakte` | Personendaten (Vorname, Nachname, E-Mail, Telefon), getrennt von den Nachrichten |
-| `nachrichten` | Anliegen, Betreff, Inhalt, Status, Eingangszeit, gehört zu Kontakt und Laden |
-| `termine` | Auftragsnummer, Datum, Titel, Notiz, erledigt |
-| `benutzer` | Logins: E-Mail, Passwort-Hash, Rolle, `laden_id` |
-| `sitzungen` | Eine Zeile pro Anmeldung, dazu `ansicht_laden_id` für den admin |
+| Tabelle       | Inhalt                                                                                         |
+| ------------- | ---------------------------------------------------------------------------------------------- |
+| `laeden`      | Ein Eintrag pro Laden: `slug`, `name`, alle Inhalte der Webseite, `termine_aufbewahren_monate` |
+| `kontakte`    | Personendaten (Vorname, Nachname, E-Mail, Telefon), getrennt von den Nachrichten               |
+| `nachrichten` | Anliegen, Betreff, Inhalt, Status, Eingangszeit, gehört zu Kontakt und Laden                   |
+| `termine`     | Auftragsnummer, Datum, Titel, Notiz, erledigt                                                  |
+| `benutzer`    | Logins: E-Mail, Passwort-Hash, Rolle, `laden_id`                                               |
+| `sitzungen`   | Eine Zeile pro Anmeldung, dazu `ansicht_laden_id` für den admin                                |
 
 Warum Kontakte getrennt? Schreibt jemand zweimal, gibt es nur einen Kontakt. Und beim Löschen
 sieht man genau, wo Namen liegen.
 
-**Noch nicht in der Datenbank:** Slogan, Adresse, Öffnungszeiten und die Anliegen-Liste der
-Laden-Seite. Die stehen noch in `app/lib/laeden.ts`. Später soll der Laden sie im Dashboard
-bearbeiten (eine Art CMS).
+Seit PR #10 stehen auch alle Inhalte der Laden-Seite in `laeden` (Slogan, Leistungen,
+Öffnungszeiten, Telefon ...). Wie das Template und das CMS funktionieren, steht in
+[08-laden-template-und-cms.md](08-laden-template-und-cms.md).
 
 ## Die Laden-Seite `/laden/[slug]`
 
 `[slug]` ist ein Platzhalter in der URL. Bei `/laden/radl-huber` ist der Slug `radl-huber`.
-Die Seite zeigt Name, Beschreibung, Adresse, Öffnungszeiten und das Kontaktformular.
+Die Seite ist ein Template aus mehreren Abschnitten, siehe [08-laden-template-und-cms.md](08-laden-template-und-cms.md).
 
 Das Formular hat zwei Schritte (PR #2):
 

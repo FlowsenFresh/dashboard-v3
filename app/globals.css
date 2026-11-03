@@ -13,6 +13,7 @@
 
   /* Grautöne, von dunkel nach hell */
   --color-hintergrund: #09090b; /* Seite */
+  --color-band: #111113; /* Streifen auf der Laden-Seite, zwischen hintergrund und flaeche */
   --color-flaeche: #18181b; /* Karten */
   --color-rand: #27272a; /* Ränder */
   --color-rand-hover: #52525b; /* Ränder beim Drüberfahren */
@@ -57,6 +58,15 @@
 /* Wie knopf, aber nur mit Rand: für den zweitwichtigsten Knopf */
 @utility knopf-rand {
   @apply rounded-lg border border-rand px-4 py-2 font-medium transition hover:border-akzent hover:text-akzent;
+}
+
+/* Große Knöpfe für die Laden-Seite: leicht zu treffen, auch auf dem Handy */
+@utility knopf-gross {
+  @apply knopf px-7 py-4 text-lg;
+}
+
+@utility knopf-gross-rand {
+  @apply knopf-rand px-7 py-4 text-lg;
 }
 
 @utility knopf-leise {
