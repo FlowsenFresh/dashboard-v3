@@ -2,6 +2,8 @@
 
 Dashboard für kleine Läden: öffentliche Laden-Seite mit Kontaktformular, dahinter Nachrichten und Termine.
 
+Ausführliche Doku (auf Deutsch, zum Lernen): [docs/](docs/README.md)
+
 ## Starten
 
 ```bash
