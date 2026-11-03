@@ -3,6 +3,7 @@ import {
   date,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   serial,
@@ -10,6 +11,7 @@ import {
   time,
   timestamp,
 } from "drizzle-orm/pg-core";
+import type { Leistung, Oeffnungszeit, UeberUns } from "../laeden";
 
 // Hier beschreiben wir die Tabellen in TypeScript. Drizzle macht daraus
 // SQL (`pnpm db:generate`) und kennt dadurch auch die Typen beim Abfragen.
@@ -20,6 +22,25 @@ export const laeden = pgTable("laeden", {
   id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(), // Teil der URL: /laden/radl-huber
   name: text("name").notNull(),
+
+  // ── Inhalt der Webseite (CMS) ──
+  // Bearbeitet im Dashboard unter /webseite. Die Laden-Seite liest genau diese Spalten.
+  branche: text("branche").notNull().default(""),
+  slogan: text("slogan").notNull().default(""),
+  beschreibung: text("beschreibung").notNull().default(""),
+  farbe: text("farbe"), // z. B. "#38bdf8", leer = unser Türkis-Grün
+  strasse: text("strasse").notNull().default(""),
+  plzOrt: text("plz_ort").notNull().default(""),
+  telefon: text("telefon").notNull().default(""),
+  email: text("email"),
+  hinweisZeiten: text("hinweis_zeiten"),
+  // Listen speichern wir als JSON in einer Spalte. Für eine Handvoll Einträge pro Laden
+  // ist das einfacher als eigene Tabellen. $type sagt TypeScript, wie der Inhalt aussieht.
+  leistungen: jsonb("leistungen").$type<Leistung[]>().notNull().default([]),
+  oeffnungszeiten: jsonb("oeffnungszeiten").$type<Oeffnungszeit[]>().notNull().default([]),
+  anliegen: jsonb("anliegen").$type<string[]>().notNull().default([]),
+  ueberUns: jsonb("ueber_uns").$type<UeberUns>(), // leer = Abschnitt wird nicht gezeigt
+
   // Wie lange Termine aufgehoben werden, pro Laden einstellbar (z. B. 24 = Garantie 2 Jahre)
   termineAufbewahrenMonate: integer("termine_aufbewahren_monate").notNull().default(24),
   erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),

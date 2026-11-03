@@ -19,7 +19,7 @@ export async function nachrichtSenden(
   _vorher: FormularStatus,
   formData: FormData,
 ): Promise<FormularStatus> {
-  const laden = ladenFinden(slug);
+  const laden = await ladenFinden(slug);
   if (!laden) {
     return { ok: false, meldung: "Diesen Laden gibt es nicht." };
   }

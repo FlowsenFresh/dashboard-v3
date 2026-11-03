@@ -3,20 +3,28 @@
 import { config } from "dotenv";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { kontakte, laeden, nachrichten, termine } from "../app/lib/db/schema";
-import { beispielLaeden } from "../app/lib/laeden";
+import { beispielLaeden } from "./beispielLaeden";
 
 config({ path: ".env.local" });
 const db = drizzle(neon(process.env.DATABASE_URL!));
 
 async function main() {
-  // Alle Beispiel-Läden aus app/lib/laeden.ts anlegen, damit ihr Kontaktformular funktioniert.
+  // Alle Beispiel-Läden aus scripts/beispielLaeden.ts anlegen.
   // "onConflictDoNothing" = gibt es ihn schon, passiert nichts. Darum gefahrlos wiederholbar.
-  await db
-    .insert(laeden)
-    .values(beispielLaeden.map(({ slug, name }) => ({ slug, name })))
-    .onConflictDoNothing();
+  await db.insert(laeden).values(beispielLaeden).onConflictDoNothing();
+
+  // Läden, die es schon vor dem CMS gab (z. B. radl-huber), haben noch leere Inhalte.
+  // Die füllen wir einmal. Wer schon etwas im Dashboard eingetragen hat (branche nicht leer),
+  // dem überschreiben wir nichts.
+  for (const { slug, ...inhalt } of beispielLaeden) {
+    await db
+      .update(laeden)
+      .set(inhalt)
+      .where(and(eq(laeden.slug, slug), eq(laeden.branche, "")));
+  }
+  console.log(`${beispielLaeden.length} Beispiel-Läden sind da.`);
   const [laden] = await db.select().from(laeden).where(eq(laeden.slug, "radl-huber"));
 
   // Nur füllen, wenn noch keine Nachrichten da sind. So kann man das Skript gefahrlos nochmal starten.

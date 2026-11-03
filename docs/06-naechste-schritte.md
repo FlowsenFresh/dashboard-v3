@@ -1,6 +1,6 @@
 # 6. Nächste Schritte
 
-Stand 03.11.2026. Erledigt ist: Laden-Seite, Formular mit Anliegen, Neon, Login, Laden-Wechsler.
+Stand 03.11.2026. Erledigt ist: Laden-Seite als Template, CMS, Formular mit Anliegen, Neon, Login, Laden-Wechsler.
 
 ## Als Nächstes
 
@@ -8,11 +8,11 @@ Stand 03.11.2026. Erledigt ist: Laden-Seite, Formular mit Anliegen, Neon, Login,
    - Projekt mit dem GitHub-Repo verbinden
    - `DATABASE_URL` als Umgebungsvariable eintragen
    - Nur die Laden-Seite ist öffentlich, der Rest braucht Login (macht `proxy.ts` schon)
-2. **Laden-Inhalte in die Datenbank (CMS)**
-   - Slogan, Beschreibung, Adresse, Öffnungszeiten und Anliegen-Liste stehen noch in
-     `app/lib/laeden.ts`. Sie sollen in die Datenbank und im Dashboard bearbeitbar werden.
-   - Gleicher Filter wie bei den Nachrichten: `sichtbarerLaden()`.
-3. **admin-Bereich**: neue Läden anlegen, Logins für Ladenbesitzer anlegen (statt nur per Skript).
+2. ~~**Laden-Inhalte in die Datenbank (CMS)**~~ erledigt in PR #10, siehe
+   [08-laden-template-und-cms.md](08-laden-template-und-cms.md).
+   - Später vielleicht: Bilder (Logo, Fotos), Abschnitte ein- und ausschalten, Reihenfolge wählen.
+3. **admin-Bereich**: neue Läden anlegen (Name + Slug), Logins für Ladenbesitzer anlegen
+   (statt nur per Skript). Die Inhalte füllt man danach im CMS.
 4. **Termine im Dashboard anlegen und bearbeiten** (bisher nur anzeigen).
 5. **Monatsauswertung + Löschen** (siehe [05-entscheidungen.md](05-entscheidungen.md)).
 
