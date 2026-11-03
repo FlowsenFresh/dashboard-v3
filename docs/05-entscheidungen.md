@@ -16,6 +16,8 @@ Hier steht, **was** wir entschieden haben und **warum**. So muss man später nic
 | 03.11. | **Vercel Pro beim ersten zahlenden Laden** | Der kostenlose Hobby-Plan ist nur für nicht-kommerzielle Projekte erlaubt. |
 | 03.11. | **Neon Auth vor dem ersten zahlenden Laden** | Für Passwort vergessen und 2FA. Neon Auth läuft auch in Frankfurt. |
 | 03.11. | **Erst auswerten, dann löschen** (Datenschutz) | Siehe unten. |
+| 03.11. | **Fotos in Vercel Blob (Frankfurt), nicht in der Datenbank** | Kein neues Konto, Speicher in `fra1`. In Neon steht nur die Adresse. Siehe [12-fotos-und-bildspeicher.md](12-fotos-und-bildspeicher.md). |
+| 03.11. | **Fotos im Browser verkleinern** | Schneller Upload, schnelle Seite, und der GPS-Ort im Foto fällt weg. |
 
 ## Hinweis zu "Daten in Deutschland"
 

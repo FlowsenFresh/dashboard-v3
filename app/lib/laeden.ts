@@ -33,6 +33,7 @@ export type LadenInhalt = {
   slogan: string;
   beschreibung: string;
   farbe: string | null; // Akzentfarbe, z. B. "#38bdf8". null = unser Türkis-Grün
+  titelbild: string | null; // Adresse des Fotos oben (Ladenfront). null = kein Foto
   leistungen: Leistung[];
   ueberUns: UeberUns | null;
   oeffnungszeiten: Oeffnungszeit[];
@@ -58,6 +59,7 @@ const spalten = {
   slogan: laeden.slogan,
   beschreibung: laeden.beschreibung,
   farbe: laeden.farbe,
+  titelbild: laeden.titelbild,
   leistungen: laeden.leistungen,
   ueberUns: laeden.ueberUns,
   oeffnungszeiten: laeden.oeffnungszeiten,

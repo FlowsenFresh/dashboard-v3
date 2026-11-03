@@ -17,6 +17,20 @@ export const ladenInhaltSchema = z.object({
     .union([z.literal(""), z.string().regex(/^#[0-9a-fA-F]{6}$/, "Farbe sieht nicht richtig aus.")])
     .nullable()
     .transform((wert) => wert || null),
+  // Nur Adressen aus unserem eigenen Bildspeicher, keine fremden Bilder von irgendwo.
+  // Dass das Bild auch zu DIESEM Laden gehört, prüft ladenInhaltSpeichern.
+  // Fehlt das Feld ganz (undefined), lassen wir das Foto in der Datenbank, wie es ist.
+  titelbild: z
+    .union([
+      z.literal(""),
+      z.url({
+        protocol: /^https$/,
+        hostname: /\.public\.blob\.vercel-storage\.com$/,
+        error: "Das Foto kommt nicht aus unserem Bildspeicher.",
+      }),
+    ])
+    .nullish()
+    .transform((wert) => (wert === undefined ? undefined : wert || null)),
   leistungen: z
     .array(
       z.object({

@@ -6,6 +6,7 @@ import { nachrichtSpeichern } from "@/app/lib/nachrichtenSpeicher";
 import { kontaktSchema } from "@/app/lib/nachrichtSchema";
 import { ladenInhaltSpeichern, type SpeichernStatus } from "@/app/lib/ladenSpeichern";
 import { aktuellerBenutzer, darfLadenBearbeiten } from "@/app/lib/sitzung";
+import { titelbildHochladen, type HochladenErgebnis } from "@/app/lib/bildSpeicher";
 
 export type FormularStatus = {
   ok: boolean;
@@ -68,4 +69,20 @@ export async function seiteSpeichern(slug: string, daten: string): Promise<Speic
   }
 
   return ladenInhaltSpeichern(laden.id, daten);
+}
+
+// Bearbeitungsmodus: ein Foto (z. B. die Ladenfront) hochladen.
+// Speichert NUR die Datei im Bildspeicher und gibt die Adresse zurück. In die Datenbank
+// kommt sie erst mit "Speichern". So kann man mit "Verwerfen" auch ein Foto wieder verwerfen.
+export async function fotoHochladen(slug: string, formData: FormData): Promise<HochladenErgebnis> {
+  // Gleiche Prüfung wie beim Speichern: Wer darf diesen Laden bearbeiten?
+  const angemeldet = await aktuellerBenutzer();
+  if (!angemeldet) return { ok: false, meldung: "Bitte melde dich erst an." };
+
+  const laden = await ladenFinden(slug);
+  if (!laden || !darfLadenBearbeiten(angemeldet, laden.id)) {
+    return { ok: false, meldung: "Diese Seite darfst du nicht bearbeiten." };
+  }
+
+  return titelbildHochladen(laden.id, formData.get("foto"));
 }

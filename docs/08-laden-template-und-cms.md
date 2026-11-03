@@ -59,6 +59,7 @@ Tabelle `laeden` (Migration `drizzle/0003_laden_inhalt.sql`):
 | ------------------------------------------- | -------------------------------------------------- |
 | `name`, `branche`, `slogan`, `beschreibung` | Text oben auf der Seite                            |
 | `farbe`                                     | z. B. `#38bdf8`, leer = Türkis-Grün                |
+| `titelbild`                                 | Adresse des Fotos oben (siehe [12](12-fotos-und-bildspeicher.md)), leer = kein Foto |
 | `leistungen`                                | Liste (JSON): Titel, Text, Preis                   |
 | `ueber_uns`                                 | JSON: Text und kurze Fakten, leer = kein Abschnitt |
 | `oeffnungszeiten`                           | Liste (JSON): Tage und Zeit                        |
