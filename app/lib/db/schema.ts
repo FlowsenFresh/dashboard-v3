@@ -30,6 +30,9 @@ export const laeden = pgTable("laeden", {
   slogan: text("slogan").notNull().default(""),
   beschreibung: text("beschreibung").notNull().default(""),
   farbe: text("farbe"), // z. B. "#38bdf8", leer = unser Türkis-Grün
+  // Foto oben auf der Seite (z. B. die Ladenfront). Nur die Adresse steht hier,
+  // das Bild selbst liegt im Bildspeicher (Vercel Blob, Frankfurt). Leer = kein Foto.
+  titelbild: text("titelbild"),
   strasse: text("strasse").notNull().default(""),
   plzOrt: text("plz_ort").notNull().default(""),
   telefon: text("telefon").notNull().default(""),
