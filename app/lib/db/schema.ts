@@ -6,6 +6,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  primaryKey,
   serial,
   text,
   time,
@@ -141,4 +142,44 @@ export const sitzungen = pgTable(
     erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("sitzungen_benutzer_idx").on(t.benutzerId)],
+);
+
+// ── Zugang für den admin (Support) ─────────────────────────────────
+// Flo darf nicht einfach so in ein Kunden-Dashboard schauen. Der Ladeninhaber erzeugt einen
+// Code und sagt ihn Flo. Erst damit gibt es Zugriff, und nur für kurze Zeit.
+// Jede Zeile ist ein Code. Wurde er eingelöst, steht hier auch, bis wann der Zugriff gilt.
+// Die Zeilen bleiben stehen: so sieht der Inhaber, wann Flo drin war.
+export const freigaben = pgTable(
+  "freigaben",
+  {
+    id: serial("id").primaryKey(),
+    ladenId: integer("laden_id")
+      .notNull()
+      .references(() => laeden.id, { onDelete: "cascade" }),
+    // Wie beim Passwort: nie den Code selbst, nur seinen Hash
+    codeHash: text("code_hash").notNull(),
+    codeGueltigBis: timestamp("code_gueltig_bis", { withTimezone: true }).notNull(),
+    fehlversuche: integer("fehlversuche").notNull().default(0), // ab 5 ist der Code verbrannt
+    eingeloestAm: timestamp("eingeloest_am", { withTimezone: true }),
+    zugriffBis: timestamp("zugriff_bis", { withTimezone: true }), // leer = noch nicht eingelöst
+    beendetAm: timestamp("beendet_am", { withTimezone: true }), // vom Inhaber früher beendet
+    erstelltAm: timestamp("erstellt_am", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("freigaben_laden_idx").on(t.ladenId, t.erstelltAm)],
+);
+
+// ── Aufrufe der Laden-Webseite ─────────────────────────────────────
+// Nur eine Zahl pro Laden und Tag. Keine IP, kein Cookie, nichts über die Besucher.
+// Darum braucht man dafür auch keinen Cookie-Banner.
+export const aufrufe = pgTable(
+  "aufrufe",
+  {
+    ladenId: integer("laden_id")
+      .notNull()
+      .references(() => laeden.id, { onDelete: "cascade" }),
+    tag: date("tag").notNull(),
+    anzahl: integer("anzahl").notNull().default(0),
+  },
+  // Pro Laden und Tag genau eine Zeile. Der Schlüssel aus zwei Spalten sorgt dafür.
+  (t) => [primaryKey({ columns: [t.ladenId, t.tag] })],
 );

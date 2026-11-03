@@ -21,10 +21,9 @@ function zeitText(zeit: Date): string {
 }
 
 // Nur Nachrichten des sichtbaren Ladens (siehe sichtbarerLaden in sitzung.ts).
-// undefined in .where() heißt "kein Filter", also alle Läden.
+// Es gibt immer einen Filter. Ohne Zugang ist die id -1, dann kommt einfach nichts.
 function nurEigenerLaden(angemeldet: Benutzer) {
-  const ladenId = sichtbarerLaden(angemeldet);
-  return ladenId === null ? undefined : eq(nachrichten.ladenId, ladenId);
+  return eq(nachrichten.ladenId, sichtbarerLaden(angemeldet));
 }
 
 export async function alleNachrichten(): Promise<Nachricht[]> {

@@ -24,6 +24,8 @@ Datei für die Vorprüfung jetzt `proxy.ts` (früher `middleware.ts`). Siehe `AG
 /nachrichten    Login nötig  Anfragen von der Laden-Seite, Status neu/gelesen/beantwortet
 /termine        Login nötig  Aufträge und was ansteht
 /webseite       Login nötig  Inhalte der Laden-Seite bearbeiten (CMS)
+/zugang         Login nötig  Inhaber: Zugangscode für Flo erzeugen, Zugang beenden
+/admin          nur admin    Alle Läden mit Zahlen, Dashboard nur mit Code öffnen
 ```
 
 Alles außer `/laden/...` und `/login` braucht einen Login (siehe [03-login.md](03-login.md)).
@@ -41,9 +43,11 @@ app/
     nachrichten/  page.tsx, actions.ts (Status ändern)
     termine/      page.tsx
     webseite/     page.tsx, actions.ts (CMS: Laden-Seite bearbeiten)
+    zugang/       page.tsx, actions.ts (Inhaber erzeugt Zugangscode für Flo)
     login/        page.tsx, actions.ts (anmelden, abmelden)
-    admin/        actions.ts (Laden wechseln)
-  components/     Karten, Formulare, Kopfzeile, LadenWechsler, WebseiteFormular
+  (admin)/        Route Group: Flos Admin-Bereich mit eigener Kopfzeile
+    admin/        page.tsx (alle Läden mit Zahlen), actions.ts (Laden mit Code öffnen)
+  components/     Karten, Formulare, Kopfzeile, WebseiteFormular, OeffnenFormular, CodeErzeugen
   lib/
     db/           schema.ts (Tabellen), index.ts (Verbindung zu Neon)
     sitzung.ts    Wer ist angemeldet? Welcher Laden ist sichtbar?

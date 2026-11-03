@@ -16,8 +16,11 @@ export async function webseiteSpeichern(
   // Welcher Laden? NICHT aus dem Formular, sondern aus der Sitzung.
   // So kann ein Ladenbesitzer nie die Seite eines anderen Ladens ändern.
   const ladenId = sichtbarerLaden(angemeldet);
-  if (ladenId === null) {
-    return { ok: false, meldung: "Bitte wähle oben zuerst einen Laden aus." };
+  if (ladenId === -1) {
+    return {
+      ok: false,
+      meldung: "Kein Zugang zu einem Laden. Bitte über den Admin-Bereich öffnen.",
+    };
   }
 
   return ladenInhaltSpeichern(ladenId, String(formData.get("daten") ?? ""));

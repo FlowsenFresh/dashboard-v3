@@ -24,11 +24,11 @@ async function Bearbeiten() {
   const angemeldet = await benutzerPflicht();
   const ladenId = sichtbarerLaden(angemeldet);
 
-  if (ladenId === null) {
+  if (ladenId === -1) {
     return (
       <p className="karte text-gedaempft">
-        Du schaust gerade auf „Alle Läden“. Wähle oben einen Laden aus, dann kannst du seine
-        Webseite bearbeiten.
+        Du hast gerade keinen Zugang zu einem Laden. Öffne ihn im Admin-Bereich mit dem Code vom
+        Inhaber, oder bearbeite die Webseite direkt auf der Laden-Seite.
       </p>
     );
   }

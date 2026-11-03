@@ -42,7 +42,9 @@ export async function anmelden(_vorher: LoginStatus, formData: FormData): Promis
   // Nur Pfade in unserer eigenen App erlauben ("/nachrichten"), keine fremden Seiten
   // ("//boese.de" oder "https://..."). Sonst könnte jemand einen Login-Link bauen,
   // der nach dem Anmelden auf eine falsche Seite weiterleitet.
-  const ziel = daten.weiter.startsWith("/") && !daten.weiter.startsWith("//") ? daten.weiter : "/";
+  let ziel = daten.weiter.startsWith("/") && !daten.weiter.startsWith("//") ? daten.weiter : "/";
+  // admin startet in seinem eigenen Bereich, nicht im Kunden-Dashboard
+  if (ziel === "/" && gefunden.rolle === "admin") ziel = "/admin";
   redirect(ziel);
 }
 
