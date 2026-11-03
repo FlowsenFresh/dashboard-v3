@@ -5,6 +5,7 @@ import { alleLaeden, ladenFinden } from "@/app/lib/laeden";
 import Seite from "./_teile/Seite";
 import Rahmen from "./_bearbeiten/Rahmen";
 import BearbeitenLeiste from "./_bearbeiten/BearbeitenLeiste";
+import AufrufZaehler from "./_teile/AufrufZaehler";
 
 // Das ist das Template: eine Seite für alle Läden.
 // Die Abschnitte stehen in _teile/ (der Unterstrich sagt Next.js: keine eigene Seite, nur Bausteine),
@@ -45,15 +46,18 @@ async function LadenInhalt({ params }: { params: PageProps<"/laden/[slug]">["par
   if (!laden) notFound();
 
   return (
-    <Rahmen
-      laden={laden}
-      seite={<Seite laden={laden} />}
-      leiste={
-        // Nur dieser kleine Teil liest das Login-Cookie, die Seite bleibt im Cache
-        <Suspense>
-          <BearbeitenLeiste slug={laden.slug} ladenId={laden.id} />
-        </Suspense>
-      }
-    />
+    <>
+      <AufrufZaehler slug={laden.slug} />
+      <Rahmen
+        laden={laden}
+        seite={<Seite laden={laden} />}
+        leiste={
+          // Nur dieser kleine Teil liest das Login-Cookie, die Seite bleibt im Cache
+          <Suspense>
+            <BearbeitenLeiste slug={laden.slug} ladenId={laden.id} />
+          </Suspense>
+        }
+      />
+    </>
   );
 }

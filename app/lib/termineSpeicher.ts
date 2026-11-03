@@ -10,7 +10,7 @@ export async function alleTermine(): Promise<Termin[]> {
   // Wie bei den Nachrichten: Login prüfen, dann nur Termine des sichtbaren Ladens
   const angemeldet = await benutzerPflicht();
   const ladenId = sichtbarerLaden(angemeldet);
-  const filter = ladenId === null ? undefined : eq(termine.ladenId, ladenId);
+  const filter = eq(termine.ladenId, ladenId); // -1 ohne Zugang: keine Termine
 
   const zeilen = await db
     .select({ termin: termine, kontakt: kontakte })

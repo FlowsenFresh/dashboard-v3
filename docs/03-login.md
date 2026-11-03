@@ -53,7 +53,11 @@ Deutschland bleiben (siehe [05-entscheidungen.md](05-entscheidungen.md)).
 | `admin` | Flo | Alle Läden, kann in einen Laden wechseln |
 | `laden` | Ladenbesitzer | Nur den eigenen Laden (`benutzer.laden_id`) |
 
-## Der Laden-Wechsler für den admin (PR #7)
+## Der Laden-Wechsler für den admin (PR #7, ersetzt in PR #12)
+
+> **Hinweis:** Das Auswahlfeld gibt es seit PR #12 nicht mehr. Der admin hat jetzt einen eigenen
+> Bereich `/admin` und kommt nur mit einem Code vom Inhaber in ein Kunden-Dashboard.
+> Siehe [10-admin-und-zugangscode.md](10-admin-und-zugangscode.md). Der Text unten zeigt, wie es vorher war.
 
 Oben in der Kopfzeile hat der admin ein Auswahlfeld: "Alle Läden" oder ein bestimmter Laden
 (`app/components/LadenWechsler.tsx`). Beim Ändern läuft `ladenWechseln` (`app/admin/actions.ts`):

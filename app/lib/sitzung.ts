@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { db } from "./db";
-import { benutzer, sitzungen } from "./db/schema";
+import { benutzer, freigaben, sitzungen } from "./db/schema";
 
 // Name des Cookies. proxy.ts schaut nur, ob es da ist. Ob es gültig ist, prüft diese Datei.
 export const SITZUNG_COOKIE = "sitzung";
@@ -16,15 +16,20 @@ export type Benutzer = {
   email: string;
   rolle: "admin" | "laden";
   ladenId: number | null; // eigener Laden (nur bei rolle "laden")
-  ansichtLadenId: number | null; // admin: gerade gewählter Laden, null = alle
-  sitzungId: string; // Hash des Tokens, damit ladenWechseln die richtige Zeile ändert
+  // admin: der Laden, in den er gerade schaut. Nur gesetzt, wenn der Inhaber ihm per Code
+  // Zugang gegeben hat und der noch läuft. Sonst null.
+  ansichtLadenId: number | null;
+  zugriffBis: Date | null; // admin: bis wann der Zugang zu diesem Laden gilt
+  sitzungId: string; // Hash des Tokens, damit ladenOeffnen die richtige Zeile ändert
 };
 
-// Welche Daten darf diese Person gerade sehen? Zahl = nur dieser Laden, null = alle Läden.
+// Welche Daten darf diese Person gerade sehen? Zahl = nur dieser Laden.
 // Alle Speicher-Funktionen filtern damit. Ein Ladenbesitzer bekommt immer seinen Laden,
-// egal was sonst in der Sitzung steht. Nur ein admin kann wechseln.
-export function sichtbarerLaden(angemeldet: Benutzer): number | null {
-  if (angemeldet.rolle === "admin") return angemeldet.ansichtLadenId;
+// egal was sonst in der Sitzung steht. Der admin sieht nur einen Laden, für den er gerade
+// einen gültigen Zugang (Code vom Inhaber) hat. Sonst -1: diese id gibt es nie, also keine Daten.
+// (null hieß früher "alle Läden". Das gibt es bewusst nicht mehr: keine Kundendaten ohne Zustimmung.)
+export function sichtbarerLaden(angemeldet: Benutzer): number {
+  if (angemeldet.rolle === "admin") return angemeldet.ansichtLadenId ?? -1;
   return angemeldet.ladenId ?? -1; // laden-Benutzer ohne Laden sieht nichts
 }
 
@@ -74,13 +79,26 @@ export async function aktuellerBenutzer(): Promise<Benutzer | null> {
       ladenId: benutzer.ladenId,
       ansichtLadenId: sitzungen.ansichtLadenId,
       sitzungId: sitzungen.id,
+      // Läuft gerade ein Zugang (Code eingelöst, noch nicht abgelaufen oder beendet)
+      // für den Laden, in den der admin schaut? Dann bis wann. Sonst leer.
+      zugriffBis: sql<string | Date | null>`(
+        select max(${freigaben.zugriffBis}) from ${freigaben}
+        where ${freigaben.ladenId} = ${sitzungen.ansichtLadenId}
+          and ${freigaben.zugriffBis} > now()
+          and ${freigaben.beendetAm} is null
+      )`,
     })
     .from(sitzungen)
     .innerJoin(benutzer, eq(sitzungen.benutzerId, benutzer.id))
     // "now()" = die Uhrzeit der Datenbank. Abgelaufene Sitzungen zählen nicht.
     .where(and(eq(sitzungen.id, tokenHash(token)), gt(sitzungen.laeuftAbAm, sql`now()`)));
 
-  return zeile ?? null;
+  if (!zeile) return null;
+
+  // Ohne gültigen Zugang zählt die gewählte Ansicht nicht
+  const zugriffBis = zeile.zugriffBis ? new Date(zeile.zugriffBis) : null;
+  const ansichtLadenId = zeile.rolle === "admin" && zugriffBis ? zeile.ansichtLadenId : null;
+  return { ...zeile, ansichtLadenId, zugriffBis: ansichtLadenId ? zugriffBis : null };
 }
 
 // Für Seiten und Actions, die nur Angemeldete sehen dürfen: ohne Login geht es zur Login-Seite.
@@ -99,7 +117,8 @@ export async function sitzungBeenden(): Promise<void> {
   speicher.delete(SITZUNG_COOKIE);
 }
 
-// admin schaut in einen bestimmten Laden (oder mit null wieder in alle)
+// admin schaut in einen bestimmten Laden (oder mit null in keinen).
+// Das allein gibt noch keinen Zugriff: aktuellerBenutzer prüft zusätzlich die Freigabe.
 export async function ansichtSetzen(angemeldet: Benutzer, ladenId: number | null): Promise<void> {
   if (angemeldet.rolle !== "admin") return;
   await db

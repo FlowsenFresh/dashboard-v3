@@ -91,8 +91,9 @@ Dashboard „Speichern“ ──▶ Datenbank ändern ──▶ updateTag ──
 ## Das CMS: `/webseite` im Dashboard
 
 - **Ladenbesitzer** sehen immer ihren eigenen Laden.
-- **admin** (du) bearbeitet den Laden, der oben im Laden-Wechsler gewählt ist. Bei „Alle Läden“
-  kommt ein Hinweis, erst einen Laden zu wählen.
+- **admin** (du) bearbeitet den Laden, für den du gerade einen Zugang per Code hast (siehe
+  [10-admin-und-zugangscode.md](10-admin-und-zugangscode.md)). Ohne Zugang
+  kommt ein Hinweis. Die öffentliche Seite kannst du aber immer per Doppelklick bearbeiten.
 
 Ablauf beim Speichern (`app/(dashboard)/webseite/actions.ts`):
 

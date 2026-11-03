@@ -1,7 +1,7 @@
 # Doku: dashboard-v3
 
 Hier steht, wie das Dashboard aufgebaut ist und warum es so gebaut ist.
-Stand: 03.11.2026 (nach PR #1 bis #11).
+Stand: 03.11.2026 (nach PR #1 bis #12).
 
 **Was ist das Projekt?** Ein Dashboard für kleine Läden (zum Beispiel eine Fahrradwerkstatt).
 Jeder Laden hat eine öffentliche Seite mit Kontaktformular. Die Nachrichten landen im Dashboard,
@@ -20,6 +20,7 @@ wo der Laden sie liest und abhakt. Dazu kommen Termine.
 | [07-plan-original.md](07-plan-original.md)                   | Kopie des Plans aus dem Projekt (Stand 02./03.11.)                    |
 | [08-laden-template-und-cms.md](08-laden-template-und-cms.md) | Die Laden-Seite als Template, und wie man sie im Dashboard bearbeitet |
 | [09-git-ablauf.md](09-git-ablauf.md)                         | Branch, PR, testen, mergen: die Befehle für jeden Schritt             |
+| [10-admin-und-zugangscode.md](10-admin-und-zugangscode.md)   | Admin-Bereich, Zugang zum Kunden-Dashboard nur mit Code, Zahlen       |
 
 Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 [Hosting, Domain & E-Mail: Plan für Läden](https://claude.ai/artifact/71iJniso3uZ2fjZDqB37JB).
@@ -39,3 +40,4 @@ Der Plan für Hosting, Domain und E-Mail liegt als eigenes Dokument:
 | #9  | Laden-Seite als Template: Abschnitte, Farbe pro Laden, 6 Test-Läden                                                 |
 | #10 | CMS: Laden-Inhalte in der Datenbank, im Dashboard unter „Webseite“ bearbeiten. Neues schlichtes Design mit Streifen |
 | #11 | Laden-Seite direkt bearbeiten: „Seite bearbeiten“-Knopf, Texte per Doppelklick ändern (nur admin und Ladeninhaber)  |
+| #12 | Eigener Admin-Bereich `/admin` mit Zahlen, Kunden-Dashboard nur mit Zugangscode vom Inhaber, Aufrufe zählen         |
