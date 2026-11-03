@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { codeErzeugen, zugangBeenden } from "@/app/lib/freigaben";
-import { benutzerPflicht } from "@/app/lib/sitzung";
+import { benutzerPflicht, istLadenInhaber } from "@/app/lib/sitzung";
 import { uhrzeit } from "@/app/lib/zeit";
 
 export type CodeStatus = { code?: string; gueltigBis?: string; fehler?: string };
@@ -11,7 +11,7 @@ export type CodeStatus = { code?: string; gueltigBis?: string; fehler?: string }
 // Der admin nicht: sonst könnte er sich den Zugang ja selbst geben.
 async function inhaberLaden(): Promise<number | null> {
   const angemeldet = await benutzerPflicht();
-  if (angemeldet.rolle !== "laden" || angemeldet.ladenId === null) return null;
+  if (!istLadenInhaber(angemeldet)) return null;
   return angemeldet.ladenId;
 }
 

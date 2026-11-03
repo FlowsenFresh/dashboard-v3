@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { aktuellerBenutzer } from "@/app/lib/sitzung";
+import { aktuellerBenutzer, darfWebseiteBearbeiten, istLadenInhaber } from "@/app/lib/sitzung";
 
 // Startseite des Kunden-Dashboards. Genau das sieht auch der Ladeninhaber.
 export default function Home() {
@@ -24,16 +24,10 @@ export default function Home() {
           <h2 className="font-semibold">Nachrichten</h2>
           <p className="mt-1 text-sm text-gedaempft">Anfragen von der Laden-Seite</p>
         </Link>
-        <Link href="/webseite" className="karte-link">
-          <h2 className="font-semibold">Webseite</h2>
-          <p className="mt-1 text-sm text-gedaempft">Texte, Zeiten und Telefon ändern</p>
-        </Link>
-        <Link href="/zugang" className="karte-link">
-          <h2 className="font-semibold">Support-Zugang</h2>
-          <p className="mt-1 text-sm text-gedaempft">
-            Code für uns erzeugen, wenn du Hilfe brauchst
-          </p>
-        </Link>
+        {/* Diese Karten hängen von den Rechten ab, darum lesen sie das Cookie (in Suspense) */}
+        <Suspense>
+          <KartenMitRechten />
+        </Suspense>
       </div>
     </main>
   );
@@ -43,4 +37,35 @@ async function AdminWeiterleitung() {
   const angemeldet = await aktuellerBenutzer();
   if (angemeldet?.rolle === "admin" && angemeldet.ansichtLadenId === null) redirect("/admin");
   return null;
+}
+
+async function KartenMitRechten() {
+  const angemeldet = await aktuellerBenutzer();
+  if (!angemeldet) return null;
+  return (
+    <>
+      {darfWebseiteBearbeiten(angemeldet) && (
+        <Link href="/webseite" className="karte-link">
+          <h2 className="font-semibold">Webseite</h2>
+          <p className="mt-1 text-sm text-gedaempft">Texte, Zeiten und Telefon ändern</p>
+        </Link>
+      )}
+      {istLadenInhaber(angemeldet) && (
+        <>
+          <Link href="/team" className="karte-link">
+            <h2 className="font-semibold">Team</h2>
+            <p className="mt-1 text-sm text-gedaempft">
+              Logins für Mitarbeiter, wer die Webseite ändern darf
+            </p>
+          </Link>
+          <Link href="/zugang" className="karte-link">
+            <h2 className="font-semibold">Support-Zugang</h2>
+            <p className="mt-1 text-sm text-gedaempft">
+              Code für uns erzeugen, wenn du Hilfe brauchst
+            </p>
+          </Link>
+        </>
+      )}
+    </>
+  );
 }

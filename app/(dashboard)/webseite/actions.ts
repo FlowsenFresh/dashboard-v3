@@ -1,7 +1,7 @@
 "use server";
 
 import { ladenInhaltSpeichern, type SpeichernStatus } from "@/app/lib/ladenSpeichern";
-import { benutzerPflicht, sichtbarerLaden } from "@/app/lib/sitzung";
+import { benutzerPflicht, darfWebseiteBearbeiten, sichtbarerLaden } from "@/app/lib/sitzung";
 
 export type { SpeichernStatus };
 
@@ -12,6 +12,11 @@ export async function webseiteSpeichern(
   formData: FormData,
 ): Promise<SpeichernStatus> {
   const angemeldet = await benutzerPflicht();
+  // Mitarbeiter nur, wenn der Inhaber es unter /team erlaubt hat. Hier auf dem Server prüfen,
+  // nicht nur den Menüpunkt verstecken: die Action kann man auch von Hand aufrufen.
+  if (!darfWebseiteBearbeiten(angemeldet)) {
+    return { ok: false, meldung: "Du darfst die Webseite nicht bearbeiten. Frag den Inhaber." };
+  }
 
   // Welcher Laden? NICHT aus dem Formular, sondern aus der Sitzung.
   // So kann ein Ladenbesitzer nie die Seite eines anderen Ladens ändern.

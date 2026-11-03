@@ -36,6 +36,13 @@
       "when": 1793719521763,
       "tag": "0004_freigaben_aufrufe",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793720267886,
+      "tag": "0005_team",
+      "breakpoints": true
     }
   ]
 }

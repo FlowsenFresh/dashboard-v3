@@ -51,7 +51,7 @@ Deutschland bleiben (siehe [05-entscheidungen.md](05-entscheidungen.md)).
 | Rolle | Wer | Was sieht er |
 | ----- | --- | ------------ |
 | `admin` | Flo | Alle Läden, kann in einen Laden wechseln |
-| `laden` | Ladenbesitzer | Nur den eigenen Laden (`benutzer.laden_id`) |
+| `laden` | Inhaber oder Mitarbeiter | Nur den eigenen Laden (`benutzer.laden_id`). Wer Inhaber ist und wer die Webseite ändern darf: siehe [11-team.md](11-team.md) |
 
 ## Der Laden-Wechsler für den admin (PR #7, ersetzt in PR #12)
 

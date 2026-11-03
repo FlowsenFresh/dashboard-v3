@@ -16,6 +16,8 @@ export type Benutzer = {
   email: string;
   rolle: "admin" | "laden";
   ladenId: number | null; // eigener Laden (nur bei rolle "laden")
+  istInhaber: boolean; // rolle "laden": der Inhaber, verwaltet das Team
+  darfWebseite: boolean; // rolle "laden": darf die Webseite bearbeiten (Inhaber immer)
   // admin: der Laden, in den er gerade schaut. Nur gesetzt, wenn der Inhaber ihm per Code
   // Zugang gegeben hat und der noch läuft. Sonst null.
   ansichtLadenId: number | null;
@@ -34,9 +36,25 @@ export function sichtbarerLaden(angemeldet: Benutzer): number {
 }
 
 // Darf diese Person die Webseite dieses Ladens bearbeiten?
-// admin darf alle, ein Ladenbesitzer nur seinen eigenen.
+// admin darf alle. Aus dem Laden: der Inhaber, und Mitarbeiter nur, wenn der Inhaber es erlaubt hat.
 export function darfLadenBearbeiten(angemeldet: Benutzer, ladenId: number): boolean {
-  return angemeldet.rolle === "admin" || angemeldet.ladenId === ladenId;
+  if (angemeldet.rolle === "admin") return true;
+  return angemeldet.ladenId === ladenId && darfWebseiteBearbeiten(angemeldet);
+}
+
+// Für Menü und Seiten im Dashboard: Webseite bearbeiten ja oder nein (ohne bestimmten Laden).
+// Der admin darf es, sobald er per Code in einem Laden ist.
+export function darfWebseiteBearbeiten(angemeldet: Benutzer): boolean {
+  if (angemeldet.rolle === "admin") return true;
+  return angemeldet.istInhaber || angemeldet.darfWebseite;
+}
+
+// Ist das der Inhaber eines Ladens? Nur er verwaltet das Team und gibt den Support-Code.
+// Der admin (Flo) ist das nie, auch nicht mit Zugang: sonst könnte er sich selbst Logins anlegen.
+export function istLadenInhaber(
+  angemeldet: Benutzer,
+): angemeldet is Benutzer & { ladenId: number } {
+  return angemeldet.rolle === "laden" && angemeldet.istInhaber && angemeldet.ladenId !== null;
 }
 
 // In der Datenbank steht nur der Hash vom Token (siehe schema.ts).
@@ -77,6 +95,8 @@ export async function aktuellerBenutzer(): Promise<Benutzer | null> {
       email: benutzer.email,
       rolle: benutzer.rolle,
       ladenId: benutzer.ladenId,
+      istInhaber: benutzer.istInhaber,
+      darfWebseite: benutzer.darfWebseite,
       ansichtLadenId: sitzungen.ansichtLadenId,
       sitzungId: sitzungen.id,
       // Läuft gerade ein Zugang (Code eingelöst, noch nicht abgelaufen oder beendet)
