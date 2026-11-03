@@ -43,22 +43,43 @@ des Besuchers. Für öffentliche Ladenfotos ist das kein Problem, Personendaten 
 Wenn ein Kunde später „100 % deutsche Firma“ verlangt: Nur `app/lib/bildSpeicher.ts` müsste
 dann auf Hetzner umgebaut werden. Der Rest bleibt gleich.
 
-## Einmal einrichten (macht Flo, ca. 3 Minuten)
+## Einmal einrichten (macht Flo)
 
-1. Auf [vercel.com](https://vercel.com) dein Projekt öffnen, oben **Storage**.
-2. **Create Database** → **Blob** wählen.
-3. Name z. B. `dashboard-fotos`, **Region: Frankfurt (fra1)** auswählen. Wichtig, das kann man
+Noch gibt es auf Vercel **kein Projekt**. Darum zuerst das Projekt anlegen, dann den Bildspeicher.
+
+### Schritt 1: Projekt auf Vercel anlegen (ca. 5 Minuten)
+
+1. [vercel.com/new](https://vercel.com/new) öffnen und mit GitHub anmelden.
+2. Bei **Import Git Repository** `dashboard-v3` wählen → **Import**. (Taucht es nicht auf: „Adjust GitHub
+   App Permissions“ und dem Vercel-Zugang das Repo erlauben.)
+3. Framework erkennt Vercel selbst (Next.js). Build-Befehl usw. so lassen.
+4. **Environment Variables** aufklappen und eintragen:
+   - Name `DATABASE_URL`, Wert: dieselbe Zeile wie in deiner `.env.local` (die Neon-Adresse,
+     ohne Anführungszeichen).
+5. **Deploy**. Nach 1 bis 2 Minuten gibt es eine Adresse wie `dashboard-v3-xyz.vercel.app`.
+
+**Region Frankfurt:** Die Datei `vercel.json` im Repo sagt Vercel `"regions": ["fra1"]`. Damit
+laufen die Server-Teile in Frankfurt, direkt neben Neon. Ohne die Datei wäre der Standard
+Washington (USA). Prüfen: Projekt → **Settings** → **Functions** → Function Region sollte
+Frankfurt zeigen.
+
+**Datenbank vorher aktuell machen:** Vercel ändert die Datenbank nicht selbst. Die neuen Spalten
+legst du wie immer von deinem Rechner aus an (`vp run db:migrate`, siehe unten bei den Befehlen).
+
+**Hobby-Plan:** Zum Ausprobieren reicht der kostenlose Plan. Beim ersten zahlenden Laden auf Pro
+wechseln (siehe [05-entscheidungen.md](05-entscheidungen.md)).
+
+### Schritt 2: Bildspeicher anlegen (ca. 3 Minuten)
+
+1. Im neuen Projekt oben **Storage** → **Create Database** → **Blob**.
+2. Name z. B. `dashboard-fotos`, **Region: Frankfurt (fra1)** auswählen. Wichtig, das kann man
    später nicht mehr ändern! Zugriff: **Public** (die Fotos sind ja für alle Besucher).
-4. Mit dem Projekt verbinden (Connect), alle Umgebungen anhaken. Vercel trägt den Schlüssel
+3. Mit dem Projekt verbinden (Connect), alle Umgebungen anhaken. Vercel trägt den Schlüssel
    `BLOB_READ_WRITE_TOKEN` selbst bei den Umgebungsvariablen ein.
-5. Für **lokal** den Schlüssel holen:
-   ```bash
-   vercel env pull .env.local
-   ```
-   Achtung: Das überschreibt `.env.local`. Wenn deine `DATABASE_URL` nur lokal drinsteht, kopiere
-   stattdessen die Zeile `BLOB_READ_WRITE_TOKEN="..."` von Vercel (Storage → dein Blob → `.env.local`-Reiter)
-   von Hand in deine `.env.local`.
-6. Neu deployen (oder einfach den PR mergen, dann baut Vercel sowieso neu).
+4. Für **lokal**: Bei Storage → dein Blob → Reiter **.env.local** die Zeile
+   `BLOB_READ_WRITE_TOKEN="..."` kopieren und in deine `.env.local` einfügen.
+5. Projekt → **Deployments** → beim obersten „…“ → **Redeploy**, damit der neue Schlüssel greift.
+   (Oder einfach den PR mergen, dann baut Vercel sowieso neu.)
 
 Ohne Schlüssel kommt beim Hochladen die Meldung „Der Bildspeicher ist noch nicht eingerichtet“.
 Sonst funktioniert alles wie vorher.
