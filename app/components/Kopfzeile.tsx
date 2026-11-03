@@ -17,6 +17,7 @@ import { uhrzeit } from "../lib/zeit";
 // die echte Prüfung steht auf jeder Seite und in jeder Action noch einmal.
 function linksFuer(angemeldet: Benutzer) {
   return [
+    { href: "/dashboard", text: "Kalender" },
     { href: "/termine", text: "Termine" },
     { href: "/nachrichten", text: "Nachrichten" },
     ...(darfWebseiteBearbeiten(angemeldet) ? [{ href: "/webseite", text: "Webseite" }] : []),
@@ -34,7 +35,7 @@ export default function Kopfzeile() {
       </Suspense>
       <header className="border-b border-rand">
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight">
             <span className="size-2.5 rounded-full bg-akzent" />
             Dashboard
           </Link>

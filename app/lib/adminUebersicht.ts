@@ -27,7 +27,7 @@ const zahl = (abfrage: ReturnType<typeof sql>) => sql<number>`(${abfrage})::int`
 // Ein Ladenbesitzer, der /admin aufruft, landet in seinem eigenen Dashboard.
 export async function adminUebersicht(): Promise<LadenKarte[]> {
   const angemeldet = await benutzerPflicht();
-  if (angemeldet.rolle !== "admin") redirect("/");
+  if (angemeldet.rolle !== "admin") redirect("/dashboard");
 
   const seit30Tagen = sql`now() - interval '30 days'`;
 

@@ -20,7 +20,8 @@ Datei für die Vorprüfung jetzt `proxy.ts` (früher `middleware.ts`). Siehe `AG
 ```
 /laden/[slug]   öffentlich   Laden-Seite mit Kontaktformular (z. B. /laden/radl-huber)
 /login          öffentlich   Anmelden
-/               Login nötig  Startseite mit Links zu Termine und Nachrichten
+/               öffentlich   Startseite: stellt das Produkt vor, Beispiel-Läden, GitHub-Knopf
+/dashboard      Login nötig  Kalender als Zentrale: Recap, Monats-Raster, Termine und Nachrichten pro Tag
 /nachrichten    Login nötig  Anfragen von der Laden-Seite, Status neu/gelesen/beantwortet
 /termine        Login nötig  Aufträge und was ansteht
 /webseite       Login nötig  Prüft das Recht und öffnet die Laden-Seite im Doppelklick-Modus
@@ -29,18 +30,19 @@ Datei für die Vorprüfung jetzt `proxy.ts` (früher `middleware.ts`). Siehe `AG
 /admin          nur admin    Alle Läden mit Zahlen, Dashboard nur mit Code öffnen
 ```
 
-Alles außer `/laden/...` und `/login` braucht einen Login (siehe [03-login.md](03-login.md)).
+Alles außer `/`, `/laden/...` und `/login` braucht einen Login (siehe [03-login.md](03-login.md)).
 
 ## Ordner
 
 ```
 app/
   layout.tsx      Rahmen für alle Seiten (html, Schrift)
+  page.tsx        Öffentliche Startseite unter /
   laden/[slug]/   page.tsx (das Template), actions.ts (Formular absenden)
     _teile/       Abschnitte der Laden-Seite: Kopf, Held, Leistungen, Über uns, ...
   (dashboard)/    Route Group: alles mit Kopfzeile. Die Klammern stehen NICHT in der URL.
     layout.tsx    Hängt die Kopfzeile an alle Dashboard-Seiten
-    page.tsx      Startseite
+    dashboard/    page.tsx (Kalender mit Recap, ?tag=2026-11-03 wählt den Tag)
     nachrichten/  page.tsx, actions.ts (Status ändern)
     termine/      page.tsx
     webseite/     page.tsx (leitet zur Laden-Seite mit ?bearbeiten weiter)

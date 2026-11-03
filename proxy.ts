@@ -10,7 +10,10 @@ const OEFFENTLICH = ["/login", "/laden/"];
 
 export function proxy(request: NextRequest) {
   const pfad = request.nextUrl.pathname;
-  const istOeffentlich = OEFFENTLICH.some((anfang) => pfad === anfang || pfad.startsWith(anfang));
+  // "/" (die Startseite) prüfen wir extra und nur genau so. In der Liste oben ginge das nicht:
+  // mit startsWith("/") wäre sonst JEDE Seite öffentlich, auch das Dashboard.
+  const istOeffentlich =
+    pfad === "/" || OEFFENTLICH.some((anfang) => pfad === anfang || pfad.startsWith(anfang));
   if (istOeffentlich) return NextResponse.next();
 
   // Gleicher Name wie SITZUNG_COOKIE in sitzung.ts (die Datei können wir hier nicht

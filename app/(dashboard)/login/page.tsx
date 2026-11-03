@@ -18,8 +18,8 @@ export default function Login({ searchParams }: PageProps<"/login">) {
 
 async function Formular({ searchParams }: Pick<PageProps<"/login">, "searchParams">) {
   // Schon angemeldet? Dann gleich weiter zum Dashboard
-  if (await aktuellerBenutzer()) redirect("/");
+  if (await aktuellerBenutzer()) redirect("/dashboard");
 
   const { weiter } = await searchParams;
-  return <LoginFormular weiter={typeof weiter === "string" ? weiter : "/"} />;
+  return <LoginFormular weiter={typeof weiter === "string" ? weiter : "/dashboard"} />;
 }
